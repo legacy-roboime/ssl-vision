@@ -26,12 +26,16 @@
 
 #include <sys/types.h>
 #include <signal.h>
-#include <unistd.h>
 #include <stdint.h>
 #include <stdio.h>
 
+#ifdef _WIN32
+#include "win_time.h"
+#else
+#include <unistd.h>
 #include <sys/time.h>
 #include <time.h>
+#endif
 
 
 /*!
@@ -131,6 +135,16 @@ typedef uint64_t cycle64_t;
 
 #define get_cycle64(cnt) \
     __asm__ __volatile__("rdtsc" : "=A" (cnt))
+
+#endif
+
+#ifdef _WIN32
+
+#define get_cycle(cnt) \
+	__asm volatile("rdtsc" : "=a" (cnt) : : "edx")
+
+#define get_cycle64(cnt) \
+	__asm volatile("rdtsc" : "=A" (cnt))
 
 #endif
 

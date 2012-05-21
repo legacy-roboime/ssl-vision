@@ -2,20 +2,23 @@ project(ssl-vision)
 cmake_minimum_required(VERSION 2.6)
 
 #defines
-add_definitions(-D UNIX)
-add_definitions(-D LINUX)
-add_definitions(-D _GNU_SOURCE)
+if(MSVC)
+else()
+	add_definitions(-D UNIX)
+	add_definitions(-D LINUX)
+	add_definitions(-D _GNU_SOURCE)
+endif()
 
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
-set (QT_USE_QTNETWORK true)
-set (QT_USE_QTOPENGL true)
+set(QT_USE_QTNETWORK true)
+set(QT_USE_QTOPENGL true)
 
-find_package ( Qt4 REQUIRED )
+find_package(Qt4 REQUIRED)
 
 include_directories(${PROJECT_BINARY_DIR})
 
-include ( ${QT_USE_FILE} )
+include(${QT_USE_FILE})
 
 include(src/shared/CMakeLists.txt.inc)
 
@@ -24,7 +27,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src/app/gui)
 include_directories(${PROJECT_SOURCE_DIR}/src/app/plugins)
 include_directories(${PROJECT_SOURCE_DIR}/src/app/stacks)
 
-set (SRCS
+set(SRCS
 	src/app/capture_thread.cpp
 	src/app/framedata.cpp
 	src/app/main.cpp
@@ -111,27 +114,32 @@ qt4_add_resources(SHARED_RC_SRCS
 	${SHARED_RC}
 )
 
-set (arch ${CMAKE_SYSTEM_PROCESSOR})
+if(UNIX)
+	set (arch ${CMAKE_SYSTEM_PROCESSOR})
 
-message (STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
-message (STATUS "Arch: ${arch}")
+	message (STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
+	message (STATUS "Arch: ${arch}")
 
-if (${arch} MATCHES "x86_64")
-	#set compiler flags here for x86_64
-	set (cc_flags "")
-elseif (${arch} MATCHES "x86")
-	#set compiler flags here for x86
-	set (cc_flags "")
+	if (${arch} MATCHES "x86_64")
+		#set compiler flags here for x86_64
+		set (cc_flags "")
+	elseif (${arch} MATCHES "x86")
+		#set compiler flags here for x86
+		set (cc_flags "")
+	endif()
+
+	#flags to set in debug mode
+	set(CMAKE_CXX_FLAGS_DEBUG "-g -Wl,--no-as-needed")
+
+	#flags to set in release mode
+	set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3 -march=native -Wl,--no-as-needed")
+
+	message(STATUS "CC Flags: ${CMAKE_CXX_FLAGS_RELEASE}")
+	message(STATUS "Custom CC Flags: ${cc_flags}")
+else()
+	# TODO:
+	message(STATUS "Visual Studio Flags:")
 endif()
-
-#flags to set in debug mode
-set (CMAKE_CXX_FLAGS_DEBUG "-g -Wl,--no-as-needed")
-
-#flags to set in release mode
-set (CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG -O3 -march=native -Wl,--no-as-needed")
-
-message( STATUS "CC Flags: ${CMAKE_CXX_FLAGS_RELEASE}")
-message (STATUS "Custom CC Flags: ${cc_flags}")
 
 add_definitions(${cc_flags})
 
@@ -139,20 +147,20 @@ add_definitions(${cc_flags})
 add_library(sslvision ${SHARED_MOC_SRCS} ${SHARED_RC_SRCS} ${CC_PROTO} ${SHARED_SRCS})
 add_dependencies(sslvision GenerateProto)
 
-set (libs ${QT_LIBRARIES} dc1394 jpeg png protobuf pthread GL GLU sslvision)
+set(libs ${QT_LIBRARIES} dc1394 jpeg png protobuf pthread GL GLU sslvision)
 
 ## build the main app
-set (target vision)
+set(target vision)
 add_executable(${target} ${UI_SRCS} ${MOC_SRCS} ${RC_SRCS} ${SRCS})
 target_link_libraries(${target} ${libs})
 
 ##build non graphical client
-set (client client)
+set(client client)
 add_executable(${client} src/client/main.cpp )
 target_link_libraries(${client} ${libs})
 
 ##build logging client
-set (lclient logClient)
+set(lclient logClient)
 add_executable(${lclient} ${LCLIENT_MOC_SRCS}
 	src/logClient/main.cpp 
 	src/logClient/CentralWindow.cpp

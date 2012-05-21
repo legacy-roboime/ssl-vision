@@ -2,9 +2,13 @@
 #define _INCLUDED_NETRAW_H_
 
 #include <sys/types.h>
+#ifdef _WIN32
+#include <WinSock2.h>
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#endif
 
 #include <stdio.h>
 #include <string.h>

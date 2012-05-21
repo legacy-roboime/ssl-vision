@@ -22,11 +22,17 @@
 #ifndef CAPTUREDC1394V2_H
 #define CAPTUREDC1394V2_H
 #include "captureinterface.h"
-#include <sys/time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include "VarTypes.h"
+
+#ifdef _WIN32
+#include "win_time.h"
+#else
+#include <sys/time.h>
+#endif
+
 #include <dc1394/control.h>
 #include <dc1394/conversions.h>
 

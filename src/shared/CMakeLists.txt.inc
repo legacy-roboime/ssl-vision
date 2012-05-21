@@ -14,10 +14,10 @@ include_directories(${shared_dir}/vartypes/xml)
 
 include_directories("/usr/include/eigen2")
 
-set (SHARED_SRCS
+set(SHARED_SRCS
 	${shared_dir}/capture/capturedc1394v2.cpp
 	${shared_dir}/capture/capturefromfile.cpp
-  ${shared_dir}/capture/capture_generator.cpp
+	${shared_dir}/capture/capture_generator.cpp
 	${shared_dir}/capture/captureinterface.cpp
 
 	${shared_dir}/cmpattern/cmpattern_pattern.cpp
@@ -47,37 +47,37 @@ set (SHARED_SRCS
 	${shared_dir}/util/rawimage.cpp
 	${shared_dir}/util/ringbuffer.cpp
 	${shared_dir}/util/texture.cpp
-  ${shared_dir}/util/framelimiter.cpp
+	${shared_dir}/util/framelimiter.cpp
 
 	${shared_dir}/vartypes/VarBase64.cpp
 	${shared_dir}/vartypes/VarNotifier.cpp
 	${shared_dir}/vartypes/VarTypes.cpp
 	${shared_dir}/vartypes/VarXML.cpp
-  ${shared_dir}/vartypes/VarTypesInstance.cpp
-  ${shared_dir}/vartypes/VarTypesFactory.cpp
+	${shared_dir}/vartypes/VarTypesInstance.cpp
+	${shared_dir}/vartypes/VarTypesFactory.cpp
 	${shared_dir}/vartypes/xml/xmlParser.cpp
 
-  ${shared_dir}/vartypes/primitives/VarStringVal.cpp
-  ${shared_dir}/vartypes/primitives/VarBoolVal.cpp
-  ${shared_dir}/vartypes/primitives/VarVal.cpp
-  ${shared_dir}/vartypes/primitives/VarIntVal.cpp
-  ${shared_dir}/vartypes/primitives/VarDoubleVal.cpp
+	${shared_dir}/vartypes/primitives/VarStringVal.cpp
+	${shared_dir}/vartypes/primitives/VarBoolVal.cpp
+	${shared_dir}/vartypes/primitives/VarVal.cpp
+	${shared_dir}/vartypes/primitives/VarIntVal.cpp
+	${shared_dir}/vartypes/primitives/VarDoubleVal.cpp
 
-  ${shared_dir}/vartypes/primitives/VarType.cpp
-  ${shared_dir}/vartypes/primitives/VarBlob.cpp
-  ${shared_dir}/vartypes/primitives/VarBool.cpp
-  ${shared_dir}/vartypes/primitives/VarDouble.cpp
-  ${shared_dir}/vartypes/primitives/VarExternal.cpp
-  ${shared_dir}/vartypes/primitives/VarInt.cpp
-  ${shared_dir}/vartypes/primitives/VarList.cpp
-  ${shared_dir}/vartypes/primitives/VarQWidget.cpp
-  ${shared_dir}/vartypes/primitives/VarSelection.cpp
-  ${shared_dir}/vartypes/primitives/VarString.cpp
-  ${shared_dir}/vartypes/primitives/VarStringEnum.cpp
-  ${shared_dir}/vartypes/primitives/VarTrigger.cpp
+	${shared_dir}/vartypes/primitives/VarType.cpp
+	${shared_dir}/vartypes/primitives/VarBlob.cpp
+	${shared_dir}/vartypes/primitives/VarBool.cpp
+	${shared_dir}/vartypes/primitives/VarDouble.cpp
+	${shared_dir}/vartypes/primitives/VarExternal.cpp
+	${shared_dir}/vartypes/primitives/VarInt.cpp
+	${shared_dir}/vartypes/primitives/VarList.cpp
+	${shared_dir}/vartypes/primitives/VarQWidget.cpp
+	${shared_dir}/vartypes/primitives/VarSelection.cpp
+	${shared_dir}/vartypes/primitives/VarString.cpp
+	${shared_dir}/vartypes/primitives/VarStringEnum.cpp
+	${shared_dir}/vartypes/primitives/VarTrigger.cpp
 
-  #${shared_dir}/vartypes/primitives/VarProtoBufferVal.cpp
-  #${shared_dir}/vartypes/primitives/VarProtoBuffer.cpp
+	#${shared_dir}/vartypes/primitives/VarProtoBufferVal.cpp
+	#${shared_dir}/vartypes/primitives/VarProtoBuffer.cpp
 
 	${shared_dir}/vartypes/gui/VarItem.cpp
 	${shared_dir}/vartypes/gui/VarItemDelegate.cpp
@@ -100,7 +100,7 @@ set (SHARED_SRCS
 set (SHARED_HEADERS
 	${shared_dir}/capture/capturedc1394v2.h
 	${shared_dir}/capture/capturefromfile.h
-  ${shared_dir}/capture/capture_generator.h
+	${shared_dir}/capture/capture_generator.h
 	
 	${shared_dir}/cmpattern/cmpattern_team.h
 	${shared_dir}/cmpattern/cmpattern_teamdetector.h
@@ -109,7 +109,7 @@ set (SHARED_HEADERS
 
 	${shared_dir}/vartypes/VarNotifier.h
 
-  ${shared_dir}/vartypes/primitives/VarType.h
+	${shared_dir}/vartypes/primitives/VarType.h
 	${shared_dir}/vartypes/primitives/VarBlob.h
 	${shared_dir}/vartypes/primitives/VarBool.h
 	${shared_dir}/vartypes/primitives/VarDouble.h
@@ -121,7 +121,7 @@ set (SHARED_HEADERS
 	${shared_dir}/vartypes/primitives/VarString.h
 	${shared_dir}/vartypes/primitives/VarStringEnum.h
 	${shared_dir}/vartypes/primitives/VarTrigger.h
-  #${shared_dir}/vartypes/primitives/VarProtoBuffer.h 
+	#${shared_dir}/vartypes/primitives/VarProtoBuffer.h 
 
 	${shared_dir}/vartypes/gui/VarItem.h
 	${shared_dir}/vartypes/gui/VarItemDelegate.h
@@ -135,34 +135,21 @@ set (SHARED_RC
 
 ### protocol buffer generation code
 
-set (PROTO_PATH ${shared_dir}/proto)
-
-set (PROTO_FILES
+set(PROTO_FILES
 	messages_robocup_ssl_detection
 	messages_robocup_ssl_geometry
 	messages_robocup_ssl_wrapper
 	messages_robocup_ssl_refbox_log
 )
 
-set (CC_PROTO)
-set (H_PROTO)
+set(PROTO_PATH ${shared_dir}/proto)
 
-foreach (file ${PROTO_FILES})
-	set (cc_file ${file}.pb.cc)
-	set (h_file ${file}.pb.h)
-	set (proto_file ${file}.proto)
-	
-	add_custom_command(OUTPUT ${cc_file} ${h_file}
-			COMMAND protoc --cpp_out=${PROJECT_BINARY_DIR} --proto_path=${PROTO_PATH} ${PROTO_PATH}/${proto_file}
-			DEPENDS ${PROTO_PATH}/${proto_file}
-			VERBATIM
-	)
-	
-	list (APPEND CC_PROTO ${PROJECT_BINARY_DIR}/${cc_file})
-	list (APPEND H_PROTO ${PROJECT_BINARY_DIR}/${h_file})
+set(PROTO_PROTOS)
+foreach(FILE ${PROTO_FILES})
+	list(APPEND PROTO_PROTOS ${PROTO_PATH}/${FILE}.proto)
 endforeach()
 
-add_custom_target(GenerateProto
-	    DEPENDS ${CC_PROTO} ${H_PROTO}
-	    VERBATIM
-	)
+find_package(Protobuf REQUIRED)
+protobuf_generate_cpp(CC_PROTO H_PROTO ${PROTO_PROTOS})
+
+include_directories(${PROTOBUF_INCLUDE_DIRS})
