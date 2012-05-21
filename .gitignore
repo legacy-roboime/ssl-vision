@@ -1,0 +1,10 @@
+##
+# ignore bin and build but let them be empty
+
+bin/*
+!bin/.gitkeep
+
+build/*
+build*/*
+!build/.gitkeep
+
