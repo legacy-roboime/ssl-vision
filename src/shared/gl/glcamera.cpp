@@ -18,7 +18,6 @@
   \author  Stefan Zickler, (C) 2008
 */
 //========================================================================
-
 #include "glcamera.h"
 
 GLCamera::GLCamera()

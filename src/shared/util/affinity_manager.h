@@ -24,11 +24,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <vector>
-#include <unistd.h>
-#include <asm/unistd.h>
-#include <syscall.h>
-#include <sched.h>
-#include "pthread.h"
+//#include <unistd.h>
+//#include <asm/unistd.h>
+//#include <syscall.h>
+//#include <sched.h>
+//#include <pthread.h>
 #define DT_LOCK pthread_mutex_lock((pthread_mutex_t*)_mutex);
 #define DT_UNLOCK pthread_mutex_unlock((pthread_mutex_t*)_mutex);
 
@@ -49,7 +49,7 @@ public:
     }
   };
 protected:
-    pthread_mutex_t * _mutex;
+    //pthread_mutex_t * _mutex;
     vector<PhysicalCore> cores;
     int max_cpu_id;
     int parseFileUpTo(FILE * f, char * output, int len, char end);

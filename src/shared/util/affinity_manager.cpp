@@ -1,3 +1,4 @@
+#ifdef USE_AFFINITY_MANAGER
 //========================================================================
 //  This software is free: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License Version 3,
@@ -152,3 +153,4 @@ void AffinityManager::parseCpuInfo() {
   printf("==================================================================\n");
   DT_UNLOCK;
 }
+#endif

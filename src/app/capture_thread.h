@@ -30,7 +30,10 @@
 #include "framecounter.h"
 #include "visionstack.h"
 #include "capturestats.h"
+#ifndef _WIN32
+//TODO: make a windows equivalent for this
 #include "affinity_manager.h"
+#endif
 
 /*!
   \class   CaptureThread
@@ -49,7 +52,9 @@ protected:
   CaptureInterface * captureDC1394;
   CaptureInterface * captureFiles;
   CaptureInterface * captureGenerator;
+#ifndef _WIN32
   AffinityManager * affinity;
+#endif
   FrameBuffer * rb;
   bool _kill;
   int camId;
@@ -80,7 +85,9 @@ public:
   VisionStack * getStack() const;
   void kill();
   VarList * getSettings();
+#ifndef _WIN32
   void setAffinityManager(AffinityManager * _affinity);
+#endif
   CaptureThread(int cam_id);
   ~CaptureThread();
 

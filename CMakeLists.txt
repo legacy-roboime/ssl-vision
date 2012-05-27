@@ -1,5 +1,5 @@
 project(ssl-vision)
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
 #defines
 if(MSVC)
@@ -62,7 +62,7 @@ set(SRCS
 	src/app/stacks/visionstack.cpp
 )
 
-qt4_wrap_cpp (MOC_SRCS
+qt4_wrap_cpp(MOC_SRCS
 	src/app/capture_thread.h
 
 	src/app/gui/cameracalibwidget.h
@@ -81,7 +81,7 @@ qt4_wrap_cpp (MOC_SRCS
 	src/app/stacks/multistack_robocup_ssl.h
 )
 
-qt4_wrap_ui (UI_SRCS
+qt4_wrap_ui(UI_SRCS
 	src/app/gui/mainwindow.ui
 	src/app/gui/videowidget.ui
 )
@@ -106,7 +106,7 @@ qt4_wrap_cpp(GCLIENT_MOC_SRCS
 
 ## shared qt wrappings
 
-qt4_wrap_cpp (SHARED_MOC_SRCS
+qt4_wrap_cpp(SHARED_MOC_SRCS
 	${SHARED_HEADERS}
 )
 
@@ -114,16 +114,19 @@ qt4_add_resources(SHARED_RC_SRCS
 	${SHARED_RC}
 )
 
-if(UNIX)
-	set (arch ${CMAKE_SYSTEM_PROCESSOR})
+if(MSVC)
+	# TODO: custom visual studio flags?
+	message(STATUS "CC Flags: ${CMAKE_CXX_FLAGS_RELEASE}")
+else()
+	set(arch ${CMAKE_SYSTEM_PROCESSOR})
 
-	message (STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
-	message (STATUS "Arch: ${arch}")
+	message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
+	message(STATUS "Arch: ${arch}")
 
-	if (${arch} MATCHES "x86_64")
+	if(${arch} MATCHES "x86_64")
 		#set compiler flags here for x86_64
 		set (cc_flags "")
-	elseif (${arch} MATCHES "x86")
+	elseif(${arch} MATCHES "x86")
 		#set compiler flags here for x86
 		set (cc_flags "")
 	endif()
@@ -136,18 +139,16 @@ if(UNIX)
 
 	message(STATUS "CC Flags: ${CMAKE_CXX_FLAGS_RELEASE}")
 	message(STATUS "Custom CC Flags: ${cc_flags}")
-else()
-	# TODO:
-	message(STATUS "Visual Studio Flags:")
+	add_definitions(${cc_flags})
 endif()
 
-add_definitions(${cc_flags})
 
 ## build the common code
 add_library(sslvision ${SHARED_MOC_SRCS} ${SHARED_RC_SRCS} ${CC_PROTO} ${SHARED_SRCS})
 add_dependencies(sslvision GenerateProto)
 
-set(libs ${QT_LIBRARIES} dc1394 jpeg png protobuf pthread GL GLU sslvision)
+#TODO: add PNG and JPEG libraries
+set(libs ${QT_LIBRARIES} ${shared_libs} sslvision)
 
 ## build the main app
 set(target vision)
@@ -171,7 +172,7 @@ add_executable(${lclient} ${LCLIENT_MOC_SRCS}
 target_link_libraries(${lclient} ${libs})
 
 ##build graphical client
-set (gclient graphicalClient)
+set(gclient graphicalClient)
 add_executable(${gclient} ${GCLIENT_MOC_SRCS}
   src/graphicalClient/main.cpp
   src/graphicalClient/soccerview.cpp

@@ -49,7 +49,7 @@ class PluginSSLNetworkOutputSettings {
 public:
   VarList * settings;
   VarString * multicast_address;
-  VarInt * multicast_port;
+  VarTypes::VarInt * multicast_port;
   VarString * multicast_interface;
 
   PluginSSLNetworkOutputSettings();

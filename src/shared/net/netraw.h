@@ -67,7 +67,7 @@ public:
   ~UDP() {close();}
 
   bool open(int port = 0, bool share_port_for_multicasting=false, bool multicast_include_localhost=false, bool blocking=false);
-  bool addMulticast(const Address &multiaddr,const Address &interface);
+  bool addMulticast(const Address &multiaddr,const Address &interfacee);
   void close();
   bool isOpen() const
     {return(fd >= 0);}

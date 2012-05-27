@@ -1,3 +1,4 @@
+#define EIGEN2_SUPPORT
 #include "camera_calibration.h"
 #include <Eigen/Cholesky>
 #include <iostream>
@@ -5,6 +6,10 @@
 #include <limits>
 #include "field.h"
 #include "geomalgo.h"
+
+#ifdef _WIN32
+#define VarInt VarTypes::VarInt
+#endif
 
 CameraParameters::CameraParameters(RoboCupCalibrationHalfField & _field) : field(_field), p_alpha(Eigen::VectorXd(1))
 {
@@ -534,6 +539,7 @@ void CameraParameters::calibrate(std::vector<GVector::vector3d<double> > &p_f, s
     // Due to an API change we need to check for
     // the right call at compile time
 #ifdef EIGEN_WORLD_VERSION
+    //TODO: verify if this is correct
     alpha.llt().solve(-beta, &new_p);
 #else
     Eigen::Cholesky<Eigen::MatrixXd> c(alpha);

@@ -21,6 +21,12 @@
 
 #include "gltext.h"
 
+#ifndef _GLUfuncptr
+#define _GLUfuncptr void (_stdcall *)()
+#endif
+
+const double GLText::FontRenderSize = 1000.0;
+
 GLText::GLText(QFont _font)
 {
   glyphs.clear();
@@ -215,7 +221,8 @@ void GLText::initializeGlyph(char ch)
   glyph.width = (maxX - minX)/FontRenderSize;
   
   if(debugTesselation) printf("numVertices: %d\n",numVertices);
-  GLdouble vertices[numVertices][3];
+  GLdouble** vertices = (GLdouble **)malloc(numVertices * 3 * sizeof(GLdouble));
+
   int j=0;
   for(int i=0; i<polygons.size(); i++){
     for(int k=0; k<polygons[i].size(); k++){
@@ -258,6 +265,8 @@ void GLText::initializeGlyph(char ch)
   glPopMatrix();
   glyph.compiled = true;
   glyphs[ch] = glyph;
+
+  free(vertices);
 }
 
 const char* GLText::getPrimitiveType(GLenum type)

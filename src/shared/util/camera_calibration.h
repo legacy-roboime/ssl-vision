@@ -163,12 +163,12 @@ public:
       VarDouble* cov_ls_x;
       VarDouble* cov_ls_y;
       
-      VarInt* pointsPerLine;
-      VarInt* pointsInsideGoal;
-      VarInt* pointsInsideCenterCircle;
-      VarInt* pointsOnCenterCircle;
-      VarInt* pointsOnDefenseAreaArc;
-      VarInt* pointsOnDefenseStretch;
+      VarTypes::VarInt* pointsPerLine;
+      VarTypes::VarInt* pointsInsideGoal;
+      VarTypes::VarInt* pointsInsideCenterCircle;
+      VarTypes::VarInt* pointsOnCenterCircle;
+      VarTypes::VarInt* pointsOnDefenseAreaArc;
+      VarTypes::VarInt* pointsOnDefenseStretch;
   };
   
   /*!

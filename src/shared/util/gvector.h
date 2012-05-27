@@ -22,7 +22,18 @@
 #ifndef __GVECTOR_H__
 #define __GVECTOR_H__
 
+#ifdef _WIN32
+#define _USE_MATH_DEFINES
+#include <cmath>
+#include <stdint.h>
+#ifndef isnan
+#define isnan(x) _isnan(x)
+#endif
+
+#else
 #include <math.h>
+#endif
+
 #include "util.h"
 
 #define V3COMP(p) p.x,p.y,p.z
@@ -316,6 +327,9 @@ inline vector3d<num> abs(vector3d<num> a)
 
   return(a);
 }
+
+#undef min
+#undef max
 
 template <class num>
 inline vector3d<num> min(vector3d<num> a,vector3d<num> b)

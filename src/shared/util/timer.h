@@ -75,6 +75,8 @@ public:
   \brief a basic timer class
   \author  James R. Bruce, (C) 1999-2002
 */
+//TODO: make the following work on windows
+#ifndef _WIN32
 class AccumulativeTimer{
   timeval tv1,tv2;
   double total;
@@ -138,13 +140,14 @@ typedef uint64_t cycle64_t;
 
 #endif
 
+//FIXME: whats wrong?
 #ifdef _WIN32
-
 #define get_cycle(cnt) \
 	__asm volatile("rdtsc" : "=a" (cnt) : : "edx")
 
 #define get_cycle64(cnt) \
 	__asm volatile("rdtsc" : "=A" (cnt))
+#endif
 
 #endif
 
@@ -181,6 +184,8 @@ inline double GetTimeSec()
 #endif
 }
 
+//TODO: make the following compile on windows
+#ifndef _WIN32
 inline void GetDate(struct tm &date)
 {
   time_t t = time(NULL);
@@ -260,5 +265,6 @@ public:
   ~FunctionCycleTimer()
     {timer.stop(); printf("%s: %0.3f\n",fname,timer.timeMSec());}
 };
+#endif
 
 #endif

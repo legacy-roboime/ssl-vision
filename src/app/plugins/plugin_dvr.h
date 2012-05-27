@@ -155,9 +155,9 @@ protected:
   DVRModeEnum mode;
   SeekModeEnum seek_mode;
   bool is_recording;
-  VarList * _settings;
-  VarInt * _max_frames;
-  VarBool * _shift_on_exceed;
+  VarTypes::VarList * _settings;
+  VarTypes::VarInt * _max_frames;
+  VarTypes::VarBool * _shift_on_exceed;
   PluginDVRWidget * w;
 
   double advance_last_t;

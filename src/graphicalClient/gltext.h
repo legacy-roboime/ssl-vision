@@ -18,11 +18,16 @@
 \author  Joydeep Biswas (C) 2011
 */
 //========================================================================
-
+#ifdef _WIN32
+#define _USE_MATH_DEFINES
+#include <cmath>
+#else
+#include <math.h>
+#endif
 #include <QVector>
 #include <QtGui>
+#include <QtOpenGL>
 #include <GL/glu.h>
-#include <math.h>
 #include <stdio.h>
 #include <float.h>
 #include "geometry.h"
@@ -84,7 +89,7 @@ private:
   static void tessEndCB();
   static void tessVertexCB(const GLvoid *data);
   static void tessErrorCB(GLenum errorCode);
-  static const double FontRenderSize = 1000.0;
+  static const double FontRenderSize;
 };
 
 #endif //GL_TEXT_H

@@ -52,35 +52,35 @@ public:
   VarList * getSettings() const {
     return settings;
   }
-  VarInt * line_width;
-  VarInt * field_length;
-  VarInt * field_width;
-  VarInt * boundary_width;
-  VarInt * referee_width;
-  VarInt * goal_width;
-  VarInt * goal_depth;
-  VarInt * goal_wall_width;
-  VarInt * center_circle_radius;
-  VarInt * defense_radius;
-  VarInt * defense_stretch;
-  VarInt * free_kick_from_defense_dist;
-  VarInt * penalty_spot_from_field_line_dist;
-  VarInt * penalty_line_from_spot_dist;
+  VarTypes::VarInt * line_width;
+  VarTypes::VarInt * field_length;
+  VarTypes::VarInt * field_width;
+  VarTypes::VarInt * boundary_width;
+  VarTypes::VarInt * referee_width;
+  VarTypes::VarInt * goal_width;
+  VarTypes::VarInt * goal_depth;
+  VarTypes::VarInt * goal_wall_width;
+  VarTypes::VarInt * center_circle_radius;
+  VarTypes::VarInt * defense_radius;
+  VarTypes::VarInt * defense_stretch;
+  VarTypes::VarInt * free_kick_from_defense_dist;
+  VarTypes::VarInt * penalty_spot_from_field_line_dist;
+  VarTypes::VarInt * penalty_line_from_spot_dist;
 
   //derived:
-  VarInt * field_total_playable_length;
-  VarInt * field_total_playable_width;
-  VarInt * field_total_surface_length;
-  VarInt * field_total_surface_width;
-  VarInt * half_field_length;
-  VarInt * half_field_width;
-  VarInt * half_line_width;
-  VarInt * half_goal_width;
-  VarInt * half_defense_stretch;
-  VarInt * half_field_total_playable_length;
-  VarInt * half_field_total_playable_width;
-  VarInt * half_field_total_surface_length;
-  VarInt * half_field_total_surface_width;
+  VarTypes::VarInt * field_total_playable_length;
+  VarTypes::VarInt * field_total_playable_width;
+  VarTypes::VarInt * field_total_surface_length;
+  VarTypes::VarInt * field_total_surface_width;
+  VarTypes::VarInt * half_field_length;
+  VarTypes::VarInt * half_field_width;
+  VarTypes::VarInt * half_line_width;
+  VarTypes::VarInt * half_goal_width;
+  VarTypes::VarInt * half_defense_stretch;
+  VarTypes::VarInt * half_field_total_playable_length;
+  VarTypes::VarInt * half_field_total_playable_width;
+  VarTypes::VarInt * half_field_total_surface_length;
+  VarTypes::VarInt * half_field_total_surface_width;
 
   #ifndef NO_PROTOBUFFERS
   void toProtoBuffer(SSL_GeometryFieldSize & buffer) const {
@@ -159,55 +159,55 @@ public:
     
     connect(restore,SIGNAL(wasEdited(VarType*)),this,SLOT(restoreRoboCup()));
     //regulation-based symmetric field:
-    field_params.push_back(line_width             = new VarInt("Line Width"));
+    field_params.push_back(line_width             = new VarTypes::VarInt("Line Width"));
    
-    field_params.push_back(field_length           = new VarInt("Field Length")); //including lines (outside to outside)
-    field_params.push_back(field_width            = new VarInt("Field Height")); //including lines (outside to outside)
+    field_params.push_back(field_length           = new VarTypes::VarInt("Field Length")); //including lines (outside to outside)
+    field_params.push_back(field_width            = new VarTypes::VarInt("Field Height")); //including lines (outside to outside)
     
-    field_params.push_back(boundary_width         = new VarInt("Boundary Width")); //width of the boundary
-    field_params.push_back(referee_width          = new VarInt("Referee Width")); //width of the ref-walking area
+    field_params.push_back(boundary_width         = new VarTypes::VarInt("Boundary Width")); //width of the boundary
+    field_params.push_back(referee_width          = new VarTypes::VarInt("Referee Width")); //width of the ref-walking area
     
-    field_params.push_back(goal_width             = new VarInt("Goal Width")); //inside width of the goal
-    field_params.push_back(goal_depth             = new VarInt("Goal Depth")); //inside depth of the goal
-    field_params.push_back(goal_wall_width        = new VarInt("Goal Wall Width")); //goal wall thickness
+    field_params.push_back(goal_width             = new VarTypes::VarInt("Goal Width")); //inside width of the goal
+    field_params.push_back(goal_depth             = new VarTypes::VarInt("Goal Depth")); //inside depth of the goal
+    field_params.push_back(goal_wall_width        = new VarTypes::VarInt("Goal Wall Width")); //goal wall thickness
     
-    field_params.push_back(center_circle_radius   = new VarInt("Center Radius")); //radius of defense quarter circles
+    field_params.push_back(center_circle_radius   = new VarTypes::VarInt("Center Radius")); //radius of defense quarter circles
     
-    field_params.push_back(defense_radius         = new VarInt("Defense Radius")); //radius of defense quarter circles
+    field_params.push_back(defense_radius         = new VarTypes::VarInt("Defense Radius")); //radius of defense quarter circles
     
     //total length of the line connecting the two quarter circles of the defense area:
-    field_params.push_back(defense_stretch        = new VarInt("Defense Stretch")); 
+    field_params.push_back(defense_stretch        = new VarTypes::VarInt("Defense Stretch")); 
     
     //distance that freekickers have to be from the defense line:
-    field_params.push_back(free_kick_from_defense_dist = new VarInt("Freekick Defense Dist")); 
+    field_params.push_back(free_kick_from_defense_dist = new VarTypes::VarInt("Freekick Defense Dist")); 
     
     //distance of the penalty spot's center from the outside of the field line
-    field_params.push_back(penalty_spot_from_field_line_dist = new VarInt("Penalty Spot Dist")); 
+    field_params.push_back(penalty_spot_from_field_line_dist = new VarTypes::VarInt("Penalty Spot Dist")); 
     
     //distance between the penalty spot and the line where all other robots must be behind during penalty
-    field_params.push_back(penalty_line_from_spot_dist = new VarInt("Penalty Line From Spot Dist")); 
+    field_params.push_back(penalty_line_from_spot_dist = new VarTypes::VarInt("Penalty Line From Spot Dist")); 
     
     //---------------------------------------------------------------
     //auto-derived variables:
     //---------------------------------------------------------------
     
     //total length of field (including boundary, BUT NOT INCLUDING REFEREE WALKING AREA)
-    derived_params.push_back(field_total_playable_length        = new VarInt("Total Playable Length")); 
-    derived_params.push_back(field_total_playable_width         = new VarInt("Total Playable Width")); 
+    derived_params.push_back(field_total_playable_length        = new VarTypes::VarInt("Total Playable Length")); 
+    derived_params.push_back(field_total_playable_width         = new VarTypes::VarInt("Total Playable Width")); 
     
     //total length from the outer walls (including playable boundary and referee walking area):
-    derived_params.push_back(field_total_surface_length         = new VarInt("Total Surface Length")); 
-    derived_params.push_back(field_total_surface_width          = new VarInt("Total Surface Width")); 
+    derived_params.push_back(field_total_surface_length         = new VarTypes::VarInt("Total Surface Length")); 
+    derived_params.push_back(field_total_surface_width          = new VarTypes::VarInt("Total Surface Width")); 
     
-    derived_params.push_back(half_field_length                  = new VarInt("Half Field Length"));
-    derived_params.push_back(half_field_width                   = new VarInt("Half Field Width"));
-    derived_params.push_back(half_line_width                    = new VarInt("Half Line Width"));
-    derived_params.push_back(half_goal_width                    = new VarInt("Half Goal Width"));
-    derived_params.push_back(half_defense_stretch               = new VarInt("Half Defense Stretch")); 
-    derived_params.push_back(half_field_total_playable_length   = new VarInt("Half Total Playable Length")); 
-    derived_params.push_back(half_field_total_playable_width    = new VarInt("Half Total Playable Width")); 
-    derived_params.push_back(half_field_total_surface_length    = new VarInt("Half Total Surface Length")); 
-    derived_params.push_back(half_field_total_surface_width     = new VarInt("Half Total Surface Width")); 
+    derived_params.push_back(half_field_length                  = new VarTypes::VarInt("Half Field Length"));
+    derived_params.push_back(half_field_width                   = new VarTypes::VarInt("Half Field Width"));
+    derived_params.push_back(half_line_width                    = new VarTypes::VarInt("Half Line Width"));
+    derived_params.push_back(half_goal_width                    = new VarTypes::VarInt("Half Goal Width"));
+    derived_params.push_back(half_defense_stretch               = new VarTypes::VarInt("Half Defense Stretch")); 
+    derived_params.push_back(half_field_total_playable_length   = new VarTypes::VarInt("Half Total Playable Length")); 
+    derived_params.push_back(half_field_total_playable_width    = new VarTypes::VarInt("Half Total Playable Width")); 
+    derived_params.push_back(half_field_total_surface_length    = new VarTypes::VarInt("Half Total Surface Length")); 
+    derived_params.push_back(half_field_total_surface_width     = new VarTypes::VarInt("Half Total Surface Width")); 
     
     for (unsigned int i=0;i<field_params.size();i++) {
       connect(field_params[i],SIGNAL(hasChanged(VarType *)),this,SLOT(changed()));
@@ -350,31 +350,31 @@ public:
       camera_pos->addItem(cameraPositionEnumToString((CameraPositionEnum)i));
     }
 
-    params.push_back(left_corner_x = new VarInt("left corner x", 3025));
-    params.push_back(left_corner_y = new VarInt("left corner y", 2025));
-    params.push_back(left_goal_area_x = new VarInt("left goal area x", 3025)); 
-    params.push_back(left_goal_area_y = new VarInt("left goal area y", 675)); 
-    params.push_back(left_goal_post_x = new VarInt("left post area x", 3025)); 
-    params.push_back(left_goal_post_y = new VarInt("left post area y", 350)); 
-    params.push_back(right_goal_post_x = new VarInt("right post area x", 3025)); 
-    params.push_back(right_goal_post_y = new VarInt("right post area y", -350)); 
-    params.push_back(right_goal_area_x = new VarInt("right goal area x", 3025)); 
-    params.push_back(right_goal_area_y = new VarInt("right goal area y", -675)); 
-    params.push_back(right_corner_x = new VarInt("right corner x", 3025));
-    params.push_back(right_corner_y = new VarInt("right corner y", -2025));
-    params.push_back(left_centerline_x = new VarInt("left centerline x", 0));
-    params.push_back(left_centerline_y = new VarInt("left centerline y", 2025));
-    params.push_back(left_centercircle_x = new VarInt("left centercircle x", 0)); 
-    params.push_back(left_centercircle_y = new VarInt("left centercircle y", 500)); 
-    params.push_back(centerpoint_x = new VarInt("centercircle x", 0)); 
-    params.push_back(centerpoint_y = new VarInt("centercircle y", 0)); 
-    params.push_back(right_centercircle_x = new VarInt("right centercircle x", 0)); 
-    params.push_back(right_centercircle_y = new VarInt("right centercircle y", -500)); 
-    params.push_back(right_centerline_x = new VarInt("right centerline x", 0));
-    params.push_back(right_centerline_y = new VarInt("right centerline y", -2025));
-    params.push_back(centercircle_radius = new VarInt("centercircle radius",500));
-    params.push_back(defense_area_radius = new VarInt("defense area radius",500));
-    params.push_back(defense_stretch = new VarInt("defense stretch",350));
+    params.push_back(left_corner_x = new VarTypes::VarInt("left corner x", 3025));
+    params.push_back(left_corner_y = new VarTypes::VarInt("left corner y", 2025));
+    params.push_back(left_goal_area_x = new VarTypes::VarInt("left goal area x", 3025)); 
+    params.push_back(left_goal_area_y = new VarTypes::VarInt("left goal area y", 675)); 
+    params.push_back(left_goal_post_x = new VarTypes::VarInt("left post area x", 3025)); 
+    params.push_back(left_goal_post_y = new VarTypes::VarInt("left post area y", 350)); 
+    params.push_back(right_goal_post_x = new VarTypes::VarInt("right post area x", 3025)); 
+    params.push_back(right_goal_post_y = new VarTypes::VarInt("right post area y", -350)); 
+    params.push_back(right_goal_area_x = new VarTypes::VarInt("right goal area x", 3025)); 
+    params.push_back(right_goal_area_y = new VarTypes::VarInt("right goal area y", -675)); 
+    params.push_back(right_corner_x = new VarTypes::VarInt("right corner x", 3025));
+    params.push_back(right_corner_y = new VarTypes::VarInt("right corner y", -2025));
+    params.push_back(left_centerline_x = new VarTypes::VarInt("left centerline x", 0));
+    params.push_back(left_centerline_y = new VarTypes::VarInt("left centerline y", 2025));
+    params.push_back(left_centercircle_x = new VarTypes::VarInt("left centercircle x", 0)); 
+    params.push_back(left_centercircle_y = new VarTypes::VarInt("left centercircle y", 500)); 
+    params.push_back(centerpoint_x = new VarTypes::VarInt("centercircle x", 0)); 
+    params.push_back(centerpoint_y = new VarTypes::VarInt("centercircle y", 0)); 
+    params.push_back(right_centercircle_x = new VarTypes::VarInt("right centercircle x", 0)); 
+    params.push_back(right_centercircle_y = new VarTypes::VarInt("right centercircle y", -500)); 
+    params.push_back(right_centerline_x = new VarTypes::VarInt("right centerline x", 0));
+    params.push_back(right_centerline_y = new VarTypes::VarInt("right centerline y", -2025));
+    params.push_back(centercircle_radius = new VarTypes::VarInt("centercircle radius",500));
+    params.push_back(defense_area_radius = new VarTypes::VarInt("defense area radius",500));
+    params.push_back(defense_stretch = new VarTypes::VarInt("defense stretch",350));
     
     
     connect(auto_update,SIGNAL(hasChanged(VarType *)),this,SLOT(autoUpdateChanged()));
@@ -500,34 +500,34 @@ public:
     list.addChild(defense_stretch);
   }
   
-  VarBool* useFeaturesOnCenterCircle;
-  VarBool* useFeaturesInDefenseArea;
-  VarBool* useFeaturesInGoal;
-  VarInt* left_corner_x;
-  VarInt* left_corner_y;
-  VarInt* left_goal_area_x; 
-  VarInt* left_goal_area_y; 
-  VarInt* left_goal_post_x; 
-  VarInt* left_goal_post_y; 
-  VarInt* right_goal_post_x; 
-  VarInt* right_goal_post_y; 
-  VarInt* right_goal_area_x; 
-  VarInt* right_goal_area_y; 
-  VarInt* right_corner_x;
-  VarInt* right_corner_y;
-  VarInt* left_centerline_x;
-  VarInt* left_centerline_y;
-  VarInt* left_centercircle_x; 
-  VarInt* left_centercircle_y; 
-  VarInt* centerpoint_x; 
-  VarInt* centerpoint_y; 
-  VarInt* right_centercircle_x; 
-  VarInt* right_centercircle_y; 
-  VarInt* right_centerline_x;
-  VarInt* right_centerline_y;
-  VarInt* centercircle_radius;
-  VarInt* defense_area_radius;
-  VarInt* defense_stretch;
+  VarTypes::VarBool* useFeaturesOnCenterCircle;
+  VarTypes::VarBool* useFeaturesInDefenseArea;
+  VarTypes::VarBool* useFeaturesInGoal;
+  VarTypes::VarInt* left_corner_x;
+  VarTypes::VarInt* left_corner_y;
+  VarTypes::VarInt* left_goal_area_x; 
+  VarTypes::VarInt* left_goal_area_y; 
+  VarTypes::VarInt* left_goal_post_x; 
+  VarTypes::VarInt* left_goal_post_y; 
+  VarTypes::VarInt* right_goal_post_x; 
+  VarTypes::VarInt* right_goal_post_y; 
+  VarTypes::VarInt* right_goal_area_x; 
+  VarTypes::VarInt* right_goal_area_y; 
+  VarTypes::VarInt* right_corner_x;
+  VarTypes::VarInt* right_corner_y;
+  VarTypes::VarInt* left_centerline_x;
+  VarTypes::VarInt* left_centerline_y;
+  VarTypes::VarInt* left_centercircle_x; 
+  VarTypes::VarInt* left_centercircle_y; 
+  VarTypes::VarInt* centerpoint_x; 
+  VarTypes::VarInt* centerpoint_y; 
+  VarTypes::VarInt* right_centercircle_x; 
+  VarTypes::VarInt* right_centercircle_y; 
+  VarTypes::VarInt* right_centerline_x;
+  VarTypes::VarInt* right_centerline_y;
+  VarTypes::VarInt* centercircle_radius;
+  VarTypes::VarInt* defense_area_radius;
+  VarTypes::VarInt* defense_stretch;
 };
 
 

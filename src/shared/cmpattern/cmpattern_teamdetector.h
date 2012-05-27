@@ -85,7 +85,7 @@ protected:
   TeamDetectorSettings * _detector_settings;
   VarList * _settings;
   VarStringEnum * _selector;
-  VarInt * _num_robots;
+  VarTypes::VarInt * _num_robots;
   Team * current_team;
   void update() {
     vector<Team *> teams = _detector_settings->getTeams();
@@ -131,7 +131,7 @@ public:
     _settings= new VarList(label);
     _settings->addChild(_selector = new VarStringEnum("Team",""));
     _selector->addFlags(VARTYPE_FLAG_NOLOAD_ENUM_CHILDREN);
-    _settings->addChild(_num_robots = new VarInt("Max Robots",5));
+    _settings->addChild(_num_robots = new VarTypes::VarInt("Max Robots",5));
     update();
   }
   VarList * getSettings() {

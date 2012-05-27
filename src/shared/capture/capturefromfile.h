@@ -24,7 +24,11 @@
 #define CAPTUREFROMFILE_H
 
 #include "captureinterface.h"
+#ifdef _WIN32
+#include "win_dirent.h"
+#else
 #include <dirent.h>
+#endif
 #include <string>
 #include <list>
 #include <algorithm>

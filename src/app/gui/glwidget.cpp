@@ -192,7 +192,9 @@ void GLWidget::myGLinit() {
     glEnable ( GL_TEXTURE_2D );  
     glEnable(GL_CULL_FACE);
   }
+#ifndef ERROR_GRAPHICS_MULTISAMPLING_NOT_SUPPORTED
   glEnable(GL_MULTISAMPLE);
+#endif
  
 }
 

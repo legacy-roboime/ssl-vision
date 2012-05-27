@@ -22,7 +22,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#ifndef _WIN32
 #include "affinity_manager.h"
+#endif
 #include <QtGui>
 #include <qmainwindow.h>
 #include "ui_mainwindow.h"
@@ -50,7 +52,9 @@ class MainWindow : public QMainWindow, public Ui_MainWindow
     Q_OBJECT
 
 public:
+#ifndef _WIN32
   AffinityManager * affinity;
+#endif
   //GetOpt * opt;
   VarList * root;
   VarTreeView * tree_view;

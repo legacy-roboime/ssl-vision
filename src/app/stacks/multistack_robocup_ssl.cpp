@@ -52,7 +52,9 @@ MultiStackRoboCupSSL::MultiStackRoboCupSSL(RenderOptions * _opts, int cameras) :
   unsigned int n = threads.size();
   for (unsigned int i = 0; i < n;i++) {
     threads[i]->setFrameBuffer(new FrameBuffer(5));
-    threads[i]->setStack(new StackRoboCupSSL(_opts,threads[i]->getFrameBuffer(),i,global_field,global_ball_settings,global_plugin_publish_geometry,global_team_selector_blue, global_team_selector_yellow,udp_server,"robocup-ssl-cam-" + QString::number(i).toStdString()));
+    ostringstream ss;
+    ss << "robocup-ssl-cam-" << i;
+    threads[i]->setStack(new StackRoboCupSSL(_opts,threads[i]->getFrameBuffer(),i,global_field,global_ball_settings,global_plugin_publish_geometry,global_team_selector_blue, global_team_selector_yellow,udp_server,ss.str()));
   }
     //TODO: make LUT widgets aware of each other for easy data-sharing
 }
@@ -73,9 +75,9 @@ void MultiStackRoboCupSSL::RefreshNetworkOutput()
 {
   udp_server->mutex.lock();
   udp_server->close();
-  udp_server->_port = global_network_output_settings->multicast_port->getInt();
-  udp_server->_net_address = global_network_output_settings->multicast_address->getString();
-  udp_server->_net_interface = global_network_output_settings->multicast_interface->getString();
+  udp_server->change_port(global_network_output_settings->multicast_port->getInt());
+  udp_server->change_address(global_network_output_settings->multicast_address->getString());
+  udp_server->change_interface(global_network_output_settings->multicast_interface->getString());
   if (udp_server->open()==false) {
     fprintf(stderr,"ERROR WHEN TRYING TO OPEN UDP NETWORK SERVER!\n");
     fflush(stderr);

@@ -19,6 +19,7 @@
 */
 //========================================================================
 #include "glLUTwidget.h"
+#include <GL/glu.h>
 
 #define UNDO_SIZE 20
 

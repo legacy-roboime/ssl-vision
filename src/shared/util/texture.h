@@ -38,8 +38,9 @@
 #endif
 
 #include <stdio.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include <QtOpenGL>
+//#include <GL/gl.h>
+//#include <GL/glu.h>
 #include <string>
 #include "image.h"
 using namespace std;

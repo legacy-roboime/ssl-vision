@@ -18,10 +18,16 @@
   \author  Roman Shtylman, 2009
 */
 //========================================================================
+#ifdef _WIN32
+#define _USE_MATH_DEFINES
+#include <cmath>
+#else
+#include <math.h>
+#endif
+
 #include "jog_dial.h"
 
 #include <QMouseEvent>
-#include <math.h>
 #include <QPainter>
 
 

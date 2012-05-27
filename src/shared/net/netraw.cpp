@@ -1,3 +1,4 @@
+#ifdef USE_NEWRAW
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/poll.h>
@@ -299,4 +300,6 @@ int main(int argc, char **argv)
     EchoClient();
   }
 }
+#endif
+
 #endif

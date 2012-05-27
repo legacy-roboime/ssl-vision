@@ -21,6 +21,20 @@
 
 #include "soccerview.h"
 
+const double GLSoccerView::minZValue = -10;
+const double GLSoccerView::maxZValue = 10;
+const double GLSoccerView::FieldZ = 1.0;
+const double GLSoccerView::RobotZ = 2.0;
+const double GLSoccerView::BallZ = 3.0;
+const int GLSoccerView::PreferedWidth = 1024;
+const int GLSoccerView::PreferedHeight = 768;
+const double GLSoccerView::MinRedrawInterval = 0.016; ///Minimum time between graphics updates (limits the fps)
+const int GLSoccerView::unknownRobotID = -1;
+
+#ifdef _WIN32
+#define snprintf _snprintf
+#endif
+
 GLSoccerView::FieldDimensions::FieldDimensions()
 {
   line_width = FieldConstantsRoboCup2009::line_width;
@@ -275,7 +289,9 @@ void GLSoccerView::paintEvent(QPaintEvent* event)
   glDisable(GL_LIGHTING);
   glDisable(GL_CULL_FACE);
   glEnable(GL_DEPTH_TEST);
+#ifndef ERROR_GRAPHICS_MULTISAMPLING_NOT_SUPPORTED
   glEnable(GL_MULTISAMPLE);
+#endif
   
   glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glMatrixMode(GL_MODELVIEW);

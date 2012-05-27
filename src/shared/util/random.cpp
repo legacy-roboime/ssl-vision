@@ -71,11 +71,14 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifdef _WIN32
+#include "win_time.h"
+#else
 #include <sys/time.h>
-#include <fcntl.h>
 #include <unistd.h>
+#endif
+#include <fcntl.h>
 #include <math.h>
-
 #include "random.h"
 
 #define MATRIX_A 0x9908b0dfUL   /* constant vector a */
@@ -91,6 +94,10 @@ void Random::randomize()
   uint32_t a[2];
   int fd;
 
+#ifdef _WIN32
+  //FIXME.
+  seed(43);
+#else
   fd = open("/dev/urandom",O_RDONLY);
   if(fd >= 0){
     read(fd,state,sizeof(uint32_t)*N);
@@ -98,16 +105,12 @@ void Random::randomize()
 
     left = 1;
   }else{
-  	#if WIN32
-  	//FIXME.
-  	seed(43);
-  	#else
     gettimeofday(&tv,NULL);
     a[0] = tv.tv_sec;
     a[1] = tv.tv_usec;
     seed(a,2);
-    #endif
   }
+#endif
 }
 
 void Random::seed(uint32_t s)

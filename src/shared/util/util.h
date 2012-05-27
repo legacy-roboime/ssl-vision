@@ -42,6 +42,15 @@
 #define M_2PI 6.28318530717958647693
 #endif
 
+#ifdef _WIN32
+inline double rint(double nr)
+{
+  double f = floor(nr);
+  double c = ceil(nr);
+  return (((c-nr) >= (nr-f)) ? f:c);
+}
+#endif
+
 using std::sort;
 
 #if 1

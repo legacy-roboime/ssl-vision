@@ -20,7 +20,11 @@
 */
 //========================================================================
 
+#ifdef _WIN32
+#include "win_time.h"
+#else
 #include <sys/time.h>
+#endif
 #include <cctype>
 #include "capturefromfile.h"
 #include "image_io.h"

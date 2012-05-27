@@ -20,13 +20,18 @@
 */
 //========================================================================
 
+#ifdef _WIN32
+#define _USE_MATH_DEFINES
+#include <cmath>
+#else
+#include <math.h>
+#endif
 #include "GraphicsPrimitives.h"
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsView>
 #include <QWheelEvent>
-#include "math.h"
 
 Robot::Robot()
 {

@@ -1,4 +1,5 @@
 get_filename_component(shared_dir ${CMAKE_CURRENT_LIST_FILE} PATH)
+set(CMAKE_MODULE_PATH ${shared_dir}/cmake/modules)
 
 include_directories(${shared_dir}/capture)
 include_directories(${shared_dir}/cmvision)
@@ -12,7 +13,31 @@ include_directories(${shared_dir}/vartypes/enhanced)
 include_directories(${shared_dir}/vartypes/gui)
 include_directories(${shared_dir}/vartypes/xml)
 
-include_directories("/usr/include/eigen2")
+set(shared_libs)
+
+find_package(OpenGL REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIR})
+list(APPEND shared_libs ${OPENGL_LIBRARIES})
+
+find_package(libdc1394 REQUIRED)
+include_directories(${LIBDC1394_INCLUDE_DIRS})
+list(APPEND shared_libs ${LIBDC1394_LIBRARIES})
+
+find_package(Eigen3 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIR})
+#include_directories("/usr/include/eigen2")
+
+find_package(JPEG)
+if(JPEG_FOUND)
+    include_directories(${JPEG_INCLUDE_DIR})
+    list(APPEND shared_libs ${JPEG_LIBRARIES})
+endif()
+
+find_package(PNG)
+if(PNG_FOUND)
+    include_directories(${PNG_INCLUDE_DIR})
+    list(APPEND shared_libs ${PNG_LIBRARIES})
+endif()
 
 set(SHARED_SRCS
 	${shared_dir}/capture/capturedc1394v2.cpp
@@ -31,7 +56,7 @@ set(SHARED_SRCS
 	${shared_dir}/gl/glcamera.cpp
 	${shared_dir}/gl/globject.cpp
 
-	${shared_dir}/net/netraw.cpp
+	#${shared_dir}/net/netraw.cp
 	${shared_dir}/net/robocup_ssl_client.cpp
 	${shared_dir}/net/robocup_ssl_server.cpp
 
@@ -97,7 +122,7 @@ set(SHARED_SRCS
 )
 
 #only ones that need to be moc'ed
-set (SHARED_HEADERS
+set(SHARED_HEADERS
 	${shared_dir}/capture/capturedc1394v2.h
 	${shared_dir}/capture/capturefromfile.h
 	${shared_dir}/capture/capture_generator.h
@@ -129,27 +154,19 @@ set (SHARED_HEADERS
 	${shared_dir}/vartypes/gui/VarTreeView.h
 )
 
-set (SHARED_RC
+set(SHARED_RC
 	${shared_dir}/vartypes/gui/icons/icons.qrc
 )
 
 ### protocol buffer generation code
 
-set(PROTO_FILES
-	messages_robocup_ssl_detection
-	messages_robocup_ssl_geometry
-	messages_robocup_ssl_wrapper
-	messages_robocup_ssl_refbox_log
-)
-
-set(PROTO_PATH ${shared_dir}/proto)
-
-set(PROTO_PROTOS)
-foreach(FILE ${PROTO_FILES})
-	list(APPEND PROTO_PROTOS ${PROTO_PATH}/${FILE}.proto)
-endforeach()
-
 find_package(Protobuf REQUIRED)
-protobuf_generate_cpp(CC_PROTO H_PROTO ${PROTO_PROTOS})
-
 include_directories(${PROTOBUF_INCLUDE_DIRS})
+list(APPEND shared_libs ${PROTOBUF_LIBRARIES})
+
+protobuf_generate_cpp(CC_PROTO H_PROTO
+	${shared_dir}/proto/messages_robocup_ssl_detection.proto
+	${shared_dir}/proto/messages_robocup_ssl_geometry.proto
+	${shared_dir}/proto/messages_robocup_ssl_wrapper.proto
+	${shared_dir}/proto/messages_robocup_ssl_refbox_log.proto
+)

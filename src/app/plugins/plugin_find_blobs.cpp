@@ -27,7 +27,7 @@ PluginFindBlobs::PluginFindBlobs(FrameBuffer * _buffer, YUVLUT * _lut, int _max_
   max_regions=_max_regions;
 
   _settings=new VarList("Blob Finding");
-  _settings->addChild(_v_min_blob_area=new VarInt("min_blob_area", 5));
+  _settings->addChild(_v_min_blob_area=new VarTypes::VarInt("min_blob_area", 5));
   _settings->addChild(_v_enable=new VarBool("enable", true));
 
 }

@@ -24,8 +24,10 @@
 MainWindow::MainWindow(bool start_capture, bool enforce_affinity)
 {
 
+#ifndef _WIN32
   affinity=0;
   if (enforce_affinity) affinity=new AffinityManager();
+#endif
   //opt=new GetOpt();
   settings=0;
   setupUi((QMainWindow *)this);
@@ -55,14 +57,17 @@ MainWindow::MainWindow(bool start_capture, bool enforce_affinity)
   //create tabs, GL visualizations and tool-panes for each capture thread in the multi-stack:
   for (unsigned int i=0;i<multi_stack->threads.size();i++) {
     VisionStack * s = multi_stack->threads[i]->getStack();
+#ifndef _WIN32
     if (affinity!=0) multi_stack->threads[i]->setAffinityManager(affinity);
+#endif
 
     GLWidget * gl=new GLWidget(0,false);
     gl->setRingBuffer(multi_stack->threads[i]->getFrameBuffer());
     gl->setVisionStack(s);
-    QString label = "Camera " + QString::number(i);
 
-    VarList * threadvar = new VarList(label.toStdString());
+    ostringstream label;
+    label << "Camera" << i;
+    VarList * threadvar = new VarList(label.str());
 
     threadvar->addChild(s->getSettings());
     //iterate through plugin variables
@@ -75,7 +80,7 @@ MainWindow::MainWindow(bool start_capture, bool enforce_affinity)
     stack_control_tab->setTabPosition(QTabWidget::East);
     stack_widget->addWidget(stack_control_tab);
 
-    VideoWidget * w=new VideoWidget(label,gl);
+    VideoWidget * w=new VideoWidget(QString(label.str().c_str()),gl);
     display_widgets.push_back(gl);
     threadvar->addChild(multi_stack->threads[i]->getSettings());
 
@@ -119,7 +124,9 @@ MainWindow::MainWindow(bool start_capture, bool enforce_affinity)
     splitter2->addWidget(stack_widget);
   }
   
+#ifndef _WIN32
   if (affinity!=0) affinity->demandCore(multi_stack->threads.size());
+#endif
 
   // Set position and size of main window:
   QSettings window_settings("RoboCup", "ssl-vision");
@@ -205,7 +212,9 @@ void MainWindow::closeEvent(QCloseEvent * event ) {
 }
 
 MainWindow::~MainWindow() {
+#ifndef _WIN32
   if (affinity!=0) delete affinity;
+#endif
 	//FIXME: right now we don't clean up anything
   VarXML::write(world,"settings.xml");
 

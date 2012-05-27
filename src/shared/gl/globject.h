@@ -21,7 +21,8 @@
 
 #ifndef GLOBJECT_H
 #define GLOBJECT_H
-#include "GL/gl.h"
+#include <QtOpenGL>
+//#include <GL/gl.h>
 #include "geometry.h"
 
 /*!

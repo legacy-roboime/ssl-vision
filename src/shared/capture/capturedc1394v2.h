@@ -329,42 +329,42 @@ protected:
   bool is_capturing;
 
   //processing variables:
-  VarBool       * v_debayer;
-  VarStringEnum * v_debayer_pattern;
-  VarStringEnum * v_debayer_method;
-  VarInt        * v_debayer_y16;
-  VarStringEnum * v_colorout;
+  VarTypes::VarBool       * v_debayer;
+  VarTypes::VarStringEnum * v_debayer_pattern;
+  VarTypes::VarStringEnum * v_debayer_method;
+  VarTypes::VarInt        * v_debayer_y16;
+  VarTypes::VarStringEnum * v_colorout;
 
   //DCAM parameters:
-  VarList * P_BRIGHTNESS;
-  VarList * P_EXPOSURE;
-  VarList * P_SHARPNESS;
-  VarList * P_WHITE_BALANCE;
-  VarList * P_HUE;
-  VarList * P_SATURATION;
-  VarList * P_GAMMA;
-  VarList * P_SHUTTER;
-  VarList * P_GAIN;
-  VarList * P_IRIS;
-  VarList * P_FOCUS;
-  VarList * P_TEMPERATURE;
-  VarList * P_TRIGGER;
-  VarList * P_TRIGGER_DELAY;
-  VarList * P_WHITE_SHADING;
-  VarList * P_FRAME_RATE;
+  VarTypes::VarList * P_BRIGHTNESS;
+  VarTypes::VarList * P_EXPOSURE;
+  VarTypes::VarList * P_SHARPNESS;
+  VarTypes::VarList * P_WHITE_BALANCE;
+  VarTypes::VarList * P_HUE;
+  VarTypes::VarList * P_SATURATION;
+  VarTypes::VarList * P_GAMMA;
+  VarTypes::VarList * P_SHUTTER;
+  VarTypes::VarList * P_GAIN;
+  VarTypes::VarList * P_IRIS;
+  VarTypes::VarList * P_FOCUS;
+  VarTypes::VarList * P_TEMPERATURE;
+  VarTypes::VarList * P_TRIGGER;
+  VarTypes::VarList * P_TRIGGER_DELAY;
+  VarTypes::VarList * P_WHITE_SHADING;
+  VarTypes::VarList * P_FRAME_RATE;
 
   //capture variables:
-  VarInt    * v_cam_bus;
-  VarInt    * v_fps;
-  VarInt    * v_width;
-  VarInt    * v_height;
-  VarInt    * v_left;
-  VarInt    * v_top;
-  VarStringEnum * v_colormode;
-  VarStringEnum * v_format;
-  VarBool   * v_use1394B;
-  VarBool   * v_use_iso_800;
-  VarInt    * v_buffer_size;
+  VarTypes::VarInt    * v_cam_bus;
+  VarTypes::VarInt    * v_fps;
+  VarTypes::VarInt    * v_width;
+  VarTypes::VarInt    * v_height;
+  VarTypes::VarInt    * v_left;
+  VarTypes::VarInt    * v_top;
+  VarTypes::VarStringEnum * v_colormode;
+  VarTypes::VarStringEnum * v_format;
+  VarTypes::VarBool   * v_use1394B;
+  VarTypes::VarBool   * v_use_iso_800;
+  VarTypes::VarInt    * v_buffer_size;
 
   unsigned int cam_id;
   int width;
