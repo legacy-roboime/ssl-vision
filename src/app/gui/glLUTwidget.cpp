@@ -602,7 +602,7 @@ void GLLUTWidget::paintGL()
     glGetDoublev(GL_MODELVIEW_MATRIX,modelMatrix);
     glDrawSlice(slices[state.slice_idx]);
   } else if (view_mode==VIEW_GRID) {
-    int cols=(int)(sqrt(slices.size()));
+    int cols=(int)(sqrt((float)slices.size()));
     int rows=slices.size()/cols;
     int c=0;
     int r=0;

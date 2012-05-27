@@ -70,7 +70,6 @@ GLSoccerView::GLSoccerView(QWidget* parent) : QGLWidget(QGLFormat ( QGL::DoubleB
   QFont RobotIDFont = this->font();
   RobotIDFont.setWeight(QFont::Bold);
   RobotIDFont.setPointSize(80);
-  glText = GLText(RobotIDFont);
   tLastRedraw = 0;
 }
 
@@ -274,10 +273,10 @@ void GLSoccerView::vectorTextTest()
   glEnd();}
   
   glColor3d(1,1,1);
-  TextTest(vector2d(1,1)*353.6,45,500,"123agdo0",GLText::LeftAligned,GLText::MedianAligned)
-  TextTest(vector2d(fieldDim.field_length*0.5,0),0,500,"123agdo0",GLText::RightAligned,GLText::BottomAligned)
-  TextTest(vector2d(0,-fieldDim.field_width*0.5),0,500,"123agdo0",GLText::CenterAligned,GLText::TopAligned)
-  TextTest(vector2d(-fieldDim.field_length*0.5,0),0,500,"1\ub023agdo0",GLText::CenterAligned,GLText::MiddleAligned)
+  //TextTest(vector2d(1,1)*353.6,45,500,"123agdo0",GLText::LeftAligned,GLText::MedianAligned)
+  //TextTest(vector2d(fieldDim.field_length*0.5,0),0,500,"123agdo0",GLText::RightAligned,GLText::BottomAligned)
+  //TextTest(vector2d(0,-fieldDim.field_width*0.5),0,500,"123agdo0",GLText::CenterAligned,GLText::TopAligned)
+  //TextTest(vector2d(-fieldDim.field_length*0.5,0),0,500,"1\ub023agdo0",GLText::CenterAligned,GLText::MiddleAligned)
 }
 
 void GLSoccerView::paintEvent(QPaintEvent* event)
@@ -298,8 +297,11 @@ void GLSoccerView::paintEvent(QPaintEvent* event)
   glPushMatrix();
   glLoadIdentity();
   glCallList(fieldLinesList);
-  drawRobots();
+
   drawBalls();
+  drawRobots();
+  drawRobotsText(event);
+
   //vectorTextTest();
   glPopMatrix();
   swapBuffers();
@@ -412,7 +414,7 @@ void GLSoccerView::drawRobot(vector2d loc, double theta, double conf, int robotI
   glPushMatrix();
   glLoadIdentity();
   glTranslated(loc.x,loc.y,0);
-  switch ( team ){
+  /*switch ( team ){
     case teamBlue:{
       glColor3d(0.2549, 0.4941, 1.0);
       break;
@@ -428,12 +430,7 @@ void GLSoccerView::drawRobot(vector2d loc, double theta, double conf, int robotI
   }
   drawQuad(-90,130,-90.0+180.0*conf,160,RobotZ);
   glColor3d(0.0,0.0,0.0);
-  char buf[1024];
-  if(robotID!=unknownRobotID)
-    snprintf(buf,1023,"%X",robotID);
-  else
-    snprintf(buf,1023,"?");
-  glText.drawString(loc,0,100,buf,GLText::CenterAligned,GLText::MiddleAligned);
+
   switch ( team ){
     case teamBlue:{
       glColor3d(0.0706, 0.2314, 0.6275);
@@ -451,11 +448,41 @@ void GLSoccerView::drawRobot(vector2d loc, double theta, double conf, int robotI
   drawQuad(-96,124,96.0,130,RobotZ+0.01);
   drawQuad(-96,124,-90.0,166,RobotZ+0.01);
   drawQuad(-96,160,96.0,166,RobotZ+0.01);
-  drawQuad(90,124,96.0,166,RobotZ+0.01);
+  drawQuad(90,124,96.0,166,RobotZ+0.01);*/
   
   glRotated(theta,0,0,1.0);
   drawRobot(team, hasAngle, true);
   glPopMatrix();
+}
+
+void GLSoccerView::drawRobotText(QPainter *painter, QPaintEvent *event, vector2d loc, int robotID)
+{
+  //TEXT
+  //glText.drawString(loc,0,100,buf,GLText::CenterAligned,GLText::MiddleAligned);
+  char buf[128];
+  if(robotID!=unknownRobotID)
+    snprintf(buf, 127, "%X", robotID);
+  else
+    snprintf(buf, 127, "?");
+
+  double displaceX = -50.0;
+  double displaceY = 50.0;
+  
+  int textX, textY, textSize;
+  textX = event->rect().width() / 2 + (loc.x - viewXOffset + displaceX) / viewScale;
+  textY = event->rect().height() / 2 - (loc.y - viewYOffset + displaceY) / viewScale;
+  textSize = 100 / viewScale;
+
+
+  textFont.setPixelSize(textSize);
+  textFont.setStyleHint(QFont::Monospace);
+  textFont.setBold(true);
+  painter->setFont(textFont);
+
+  textPen = QPen(Qt::black);
+  painter->setPen(textPen);
+
+  painter->drawText(textX, textY, textSize, textSize, Qt::AlignCenter, buf);
 }
 
 void GLSoccerView::drawFieldLines(FieldDimensions& dimensions)
@@ -526,9 +553,23 @@ void GLSoccerView::drawRobots()
   for(int i=0; i<robots.size(); i++){
     for(int j=0; j<robots[i].size(); j++){
       Robot r = robots[i][j];
-      drawRobot(r.loc,r.angle,r.conf,r.id,r.team,r.hasAngle);
+	  drawRobot(r.loc,r.angle,r.conf,r.id,r.team,r.hasAngle);
     }
   }
+}
+
+void GLSoccerView::drawRobotsText(QPaintEvent *event)
+{
+  QPainter painter;
+  painter.begin(this);
+  painter.setRenderHint(QPainter::Antialiasing);
+  for(int i=0; i<robots.size(); i++){
+    for(int j=0; j<robots[i].size(); j++){
+	  Robot r = robots[i][j];
+	  drawRobotText(&painter, event, r.loc, r.id);
+	}
+  }
+  painter.end();
 }
 
 void GLSoccerView::updateDetection(SSL_DetectionFrame& detection)

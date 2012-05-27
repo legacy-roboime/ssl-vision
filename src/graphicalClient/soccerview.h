@@ -29,6 +29,7 @@
 #include <QGLWidget>
 #include <QMutex>
 #include <QVector>
+#include <QPen>
 #include <GL/glu.h>
 #include <float.h>
 //#include <stdio.h>
@@ -116,7 +117,9 @@ private:
   QVector <QVector<Robot> > robots;
   QVector <QVector<vector2d> > balls;
   QMutex graphicsMutex;
-  GLText glText;
+
+  QFont textFont;
+  QPen textPen;
   
   GLuint fieldLinesList;
   GLuint blueRobotShape;
@@ -143,6 +146,7 @@ private:
 private:
   void drawFieldLines(FieldDimensions &dimensions);
   void drawRobots();
+  void drawRobotsText(QPaintEvent *event);
   void drawBalls();
   void drawQuad(vector2d loc1, vector2d loc2, double z=0.0);
   void drawQuad(double x1, double y1, double x2, double y2, double z=0.0){drawQuad(vector2d(x1,y1),vector2d(x2,y2),z);}
@@ -151,6 +155,7 @@ private:
   void recomputeProjection();
   void drawRobot(vector2d loc, double theta, double conf, int robotID, int team, bool hasAngle);
   void drawRobot(int team, bool hasAngle, bool useDisplayLists);
+  void drawRobotText(QPainter *painter, QPaintEvent *event, vector2d loc, int robotID);
   int UpdateBalls ( QVector<QPointF> &_balls, int cameraID );
   void drawBall(vector2d loc);
   void vectorTextTest();

@@ -221,15 +221,13 @@ void GLText::initializeGlyph(char ch)
   glyph.width = (maxX - minX)/FontRenderSize;
   
   if(debugTesselation) printf("numVertices: %d\n",numVertices);
-  GLdouble** vertices = (GLdouble **)malloc(numVertices * 3 * sizeof(GLdouble));
+  GLdouble* vertices = (GLdouble *)calloc(numVertices * 3, sizeof(GLdouble));
 
-  int j=0;
-  for(int i=0; i<polygons.size(); i++){
-    for(int k=0; k<polygons[i].size(); k++){
-      vertices[j][0] = polygons[i][k].x()/FontRenderSize;
-      vertices[j][1] = -polygons[i][k].y()/FontRenderSize;
-      vertices[j][2] = 9;
-      j++;
+  for(int j = 0, i = 0; i < polygons.size(); i++){
+    for(int k = 0; k < polygons[i].size(); k++, j++){
+      *(vertices + 3 * j + 0) = polygons[i][k].x()/FontRenderSize;
+      *(vertices + 3 * j + 1) = -polygons[i][k].y()/FontRenderSize;
+      *(vertices + 3 * j + 2) = 9;
     }
   }
   
@@ -250,12 +248,10 @@ void GLText::initializeGlyph(char ch)
   }
   glNewList(glyph.displayListID, GL_COMPILE);
   gluTessBeginPolygon(tess, 0);
-  j=0;
-  for(int i=0; i<polygons.size(); i++){
+  for(int j = 0, i = 0; i < polygons.size(); i++){
     gluTessBeginContour(tess);
-    for(int k=0; k<polygons[i].size(); k++){
-      gluTessVertex(tess, vertices[j], vertices[j]);
-      j++;
+    for(int k = 0; k < polygons[i].size(); k++, j++){
+      gluTessVertex(tess, vertices + 3 * j, vertices + 3 * j);
     }
     gluTessEndContour(tess);
   }
@@ -265,8 +261,6 @@ void GLText::initializeGlyph(char ch)
   glPopMatrix();
   glyph.compiled = true;
   glyphs[ch] = glyph;
-
-  free(vertices);
 }
 
 const char* GLText::getPrimitiveType(GLenum type)
