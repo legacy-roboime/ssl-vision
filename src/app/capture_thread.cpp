@@ -82,7 +82,9 @@ VarList * CaptureThread::getSettings() {
 
 CaptureThread::~CaptureThread()
 {
+#ifdef USE_DC1394
   delete captureDC1394;
+#endif
   delete captureFiles;
   delete captureGenerator;
   delete counter;
@@ -104,12 +106,17 @@ void CaptureThread::selectCaptureMethod() {
   capture_mutex.lock();
   CaptureInterface * old_capture=capture;
   CaptureInterface * new_capture=0;
-  if(captureModule->getString() == "Read from files") {
+  string mode = captureModule->getString();
+  if(mode == "Read from files") {
     new_capture = captureFiles;
-  } else if(captureModule->getString() == "Generator") {
+  } else if(mode == "Generator") {
     new_capture = captureGenerator;
   } else {
+#ifdef USE_DC1394
     new_capture = captureDC1394;
+#else
+    new_capture = captureGenerator;
+#endif
   }
 
   if (old_capture!=0 && new_capture!=old_capture && old_capture->isCapturing()) {

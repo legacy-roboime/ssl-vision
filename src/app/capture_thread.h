@@ -51,7 +51,9 @@ protected:
   VisionStack * stack;
   FrameCounter * counter;
   CaptureInterface * capture;
+#ifdef USE_DC1394
   CaptureInterface * captureDC1394;
+#endif
   CaptureInterface * captureFiles;
   CaptureInterface * captureGenerator;
 #ifdef USE_AFFINITY_MANAGER

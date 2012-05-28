@@ -24,7 +24,7 @@
 MainWindow::MainWindow(bool start_capture, bool enforce_affinity)
 {
 
-#ifdef HAVE_LINUX
+#ifdef USE_AFFINITY_MANAGER
   affinity=0;
   if (enforce_affinity) affinity=new AffinityManager();
 #endif
@@ -57,7 +57,7 @@ MainWindow::MainWindow(bool start_capture, bool enforce_affinity)
   //create tabs, GL visualizations and tool-panes for each capture thread in the multi-stack:
   for (unsigned int i=0;i<multi_stack->threads.size();i++) {
     VisionStack * s = multi_stack->threads[i]->getStack();
-#ifdef HAVE_LINUX
+#ifdef USE_AFFINITY_MANAGER
     if (affinity!=0) multi_stack->threads[i]->setAffinityManager(affinity);
 #endif
 
@@ -124,7 +124,7 @@ MainWindow::MainWindow(bool start_capture, bool enforce_affinity)
     splitter2->addWidget(stack_widget);
   }
   
-#ifdef HAVE_LINUX
+#ifdef USE_AFFINITY_MANAGER
   if (affinity!=0) affinity->demandCore(multi_stack->threads.size());
 #endif
 
@@ -147,12 +147,14 @@ MainWindow::MainWindow(bool start_capture, bool enforce_affinity)
   ((MultiStackRoboCupSSL*)multi_stack)->RefreshNetworkOutput();
   multi_stack->start();
 
+#ifdef USE_DC1394
   if (start_capture==true) {
     for (unsigned int i = 0; i < multi_stack->threads.size(); i++) {
       CaptureThread * ct = multi_stack->threads[i];
       ct->init();
     }
   }
+#endif
 
   tree_view->setModel(tmodel);
   tmodel->setRootItems(world);
