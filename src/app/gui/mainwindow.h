@@ -22,7 +22,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#ifndef _WIN32
+#ifdef HAVE_LINUX
 #include "affinity_manager.h"
 #endif
 #include <QtGui>
@@ -52,7 +52,7 @@ class MainWindow : public QMainWindow, public Ui_MainWindow
     Q_OBJECT
 
 public:
-#ifndef _WIN32
+#ifdef HAVE_LINUX
   AffinityManager * affinity;
 #endif
   //GetOpt * opt;

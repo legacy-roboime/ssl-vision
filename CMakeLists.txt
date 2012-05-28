@@ -11,6 +11,7 @@ else()
 		add_definitions(-DHAVE_MACOSX)
 	else()
 		add_definitions(-DHAVE_LINUX)
+		add_definitions(-DUSE_AFFINITY_MANAGER)
 		add_definitions(-DLINUX)
 		# why this? can't other compilers be used on linux?
 		add_definitions(-D_GNU_SOURCE)

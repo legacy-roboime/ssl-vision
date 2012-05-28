@@ -24,8 +24,8 @@
 
 #include "util.h"
 #include "colors.h"
-#ifndef NO_DC1394_CONVERSIONS
-  #include <dc1394/conversions.h>
+#ifdef USE_DC1394
+# include <dc1394/conversions.h>
 #endif
 
 //#include "ccvt.h"

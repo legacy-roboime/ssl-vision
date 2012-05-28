@@ -18,17 +18,18 @@
   \author  Stefan Zickler, 2009
 */
 //========================================================================
+#ifdef USE_AFFINITY_MANAGER
 #ifndef AFFINITY_MANAGER_H
 #define AFFINITY_MANAGER_H
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <vector>
-//#include <unistd.h>
-//#include <asm/unistd.h>
-//#include <syscall.h>
-//#include <sched.h>
-//#include <pthread.h>
+#include <unistd.h>
+#include <asm/unistd.h>
+#include <syscall.h>
+#include <sched.h>
+#include <pthread.h>
 #define DT_LOCK pthread_mutex_lock((pthread_mutex_t*)_mutex);
 #define DT_UNLOCK pthread_mutex_unlock((pthread_mutex_t*)_mutex);
 
@@ -63,4 +64,5 @@ public:
 
 };
 
+#endif
 #endif

@@ -19,7 +19,11 @@
 */
 //========================================================================
 #include "glLUTwidget.h"
+#ifdef HAVE_MACOSX
+#include <OpenGL/glu.h>
+#else
 #include <GL/glu.h>
+#endif
 
 #define UNDO_SIZE 20
 

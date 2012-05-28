@@ -18,7 +18,7 @@
   \author  Stefan Zickler, (C) 2008
 */
 //========================================================================
-
+#ifdef USE_DC1394
 #ifndef CAPTUREDC1394V2_H
 #define CAPTUREDC1394V2_H
 #include "captureinterface.h"
@@ -461,4 +461,5 @@ protected:
 
 };
 
+#endif
 #endif

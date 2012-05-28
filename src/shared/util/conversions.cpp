@@ -99,10 +99,10 @@ void Conversions::uyvy2rgb ( unsigned char *src,
                              unsigned char *dest,
                              int width,
                              int height ) {
-  #ifndef NO_DC1394_CONVERSIONS
+#ifdef USE_DC1394
     dc1394_convert_to_RGB8(src,dest, width, height, DC1394_BYTE_ORDER_UYVY,
                        DC1394_COLOR_CODING_YUV422, 8);
-  #else
+#else
   
   int NumPixels = width*height;
                              
@@ -127,7 +127,7 @@ void Conversions::uyvy2rgb ( unsigned char *src,
     dest[j++] = g;
     dest[j++] = b;
   }
-  #endif
+#endif
 }
 
 void Conversions::uyvy2bgr ( unsigned char *src,

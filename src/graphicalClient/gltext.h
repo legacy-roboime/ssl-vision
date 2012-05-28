@@ -27,7 +27,11 @@
 #include <QVector>
 #include <QtGui>
 #include <QtOpenGL>
-#include <GL/glu.h>
+#ifdef HAVE_MACOSX
+# include <OpenGL/glu.h>
+#else
+# include <GL/glu.h>
+#endif
 #include <stdio.h>
 #include <float.h>
 #include "geometry.h"

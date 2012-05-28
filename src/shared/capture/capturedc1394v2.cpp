@@ -18,6 +18,7 @@
   \author  Stefan Zickler, (C) 2008
 */
 //========================================================================
+#ifdef USE_DC1394
 #include "capturedc1394v2.h"
 
 GlobalCaptureDC1394instanceManager* GlobalCaptureDC1394instanceManager::pinstance = 0;
@@ -1676,3 +1677,4 @@ void CaptureDC1394v2::releaseFrame() {
 string CaptureDC1394v2::getCaptureMethodName() const {
   return "DC1394";
 }
+#endif

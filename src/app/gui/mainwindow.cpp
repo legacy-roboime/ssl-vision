@@ -24,7 +24,7 @@
 MainWindow::MainWindow(bool start_capture, bool enforce_affinity)
 {
 
-#ifndef _WIN32
+#ifdef HAVE_LINUX
   affinity=0;
   if (enforce_affinity) affinity=new AffinityManager();
 #endif
@@ -57,7 +57,7 @@ MainWindow::MainWindow(bool start_capture, bool enforce_affinity)
   //create tabs, GL visualizations and tool-panes for each capture thread in the multi-stack:
   for (unsigned int i=0;i<multi_stack->threads.size();i++) {
     VisionStack * s = multi_stack->threads[i]->getStack();
-#ifndef _WIN32
+#ifdef HAVE_LINUX
     if (affinity!=0) multi_stack->threads[i]->setAffinityManager(affinity);
 #endif
 
@@ -124,7 +124,7 @@ MainWindow::MainWindow(bool start_capture, bool enforce_affinity)
     splitter2->addWidget(stack_widget);
   }
   
-#ifndef _WIN32
+#ifdef HAVE_LINUX
   if (affinity!=0) affinity->demandCore(multi_stack->threads.size());
 #endif
 
@@ -212,7 +212,7 @@ void MainWindow::closeEvent(QCloseEvent * event ) {
 }
 
 MainWindow::~MainWindow() {
-#ifndef _WIN32
+#ifdef HAVE_LINUX
   if (affinity!=0) delete affinity;
 #endif
 	//FIXME: right now we don't clean up anything

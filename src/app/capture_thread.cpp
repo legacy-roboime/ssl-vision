@@ -24,7 +24,7 @@
 CaptureThread::CaptureThread(int cam_id)
 {
   camId=cam_id;
-#ifndef _WIN32
+#ifdef USE_AFFINITY_MANAGER
   affinity=0;
 #endif
   settings=new VarList("Image Capture");
@@ -54,7 +54,9 @@ CaptureThread::CaptureThread(int cam_id)
   stack = 0;
   counter=new FrameCounter();
   capture=0;
+#ifdef USE_DC1394
   captureDC1394 = new CaptureDC1394v2(dc1394,camId);
+#endif
   captureFiles = new CaptureFromFile(fromfile);
   captureGenerator = new CaptureGenerator(generator);
   selectCaptureMethod();
@@ -62,7 +64,7 @@ CaptureThread::CaptureThread(int cam_id)
   rb=0;
 }
 
-#ifndef _WIN32
+#ifdef USE_AFFINITY_MANAGER
 void CaptureThread::setAffinityManager(AffinityManager * _affinity) {
   affinity=_affinity;
 }
@@ -173,7 +175,7 @@ void CaptureThread::run() {
     CaptureStats * stats;
     bool changed;
 
-#ifndef _WIN32
+#ifdef USE_AFFINITY_MANAGER
     if (affinity!=0) {
       affinity->demandCore(camId);
     }

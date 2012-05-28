@@ -22,7 +22,11 @@
 #include "gltext.h"
 
 #ifndef _GLUfuncptr
+#ifdef HAVE_WINDOWS
 #define _GLUfuncptr void (_stdcall *)()
+#else
+#define _GLUfuncptr GLvoid (*)()
+#endif
 #endif
 
 const double GLText::FontRenderSize = 1000.0;

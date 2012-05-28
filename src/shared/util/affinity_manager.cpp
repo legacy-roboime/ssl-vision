@@ -1,4 +1,3 @@
-#ifdef USE_AFFINITY_MANAGER
 //========================================================================
 //  This software is free: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License Version 3,
@@ -19,6 +18,7 @@
   \author  Stefan Zickler, 2009
 */
 //========================================================================
+#ifdef HAVE_LINUX
 #include "affinity_manager.h"
 
 AffinityManager::AffinityManager()

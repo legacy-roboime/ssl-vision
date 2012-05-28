@@ -31,7 +31,11 @@
 #include <QMutex>
 #include <QVector>
 #include <QPen>
-#include <GL/glu.h>
+#ifdef HAVE_MACOSX
+# include <OpenGL/glu.h>
+#else
+# include <GL/glu.h>
+#endif
 #include <float.h>
 //#include <stdio.h>
 #include <cstdio>

@@ -21,7 +21,9 @@
 
 #ifndef CAPTURE_THREAD_H
 #define CAPTURE_THREAD_H
+#ifdef USE_DC1394
 #include "capturedc1394v2.h"
+#endif
 #include "capturefromfile.h"
 #include "capture_generator.h"
 #include <QThread>
@@ -52,7 +54,7 @@ protected:
   CaptureInterface * captureDC1394;
   CaptureInterface * captureFiles;
   CaptureInterface * captureGenerator;
-#ifndef _WIN32
+#ifdef USE_AFFINITY_MANAGER
   AffinityManager * affinity;
 #endif
   FrameBuffer * rb;
@@ -85,7 +87,7 @@ public:
   VisionStack * getStack() const;
   void kill();
   VarList * getSettings();
-#ifndef _WIN32
+#ifdef USE_AFFINITY_MANAGER
   void setAffinityManager(AffinityManager * _affinity);
 #endif
   CaptureThread(int cam_id);
