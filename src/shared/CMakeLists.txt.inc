@@ -118,7 +118,6 @@ set(SHARED_SRCS
 
 	#${shared_dir}/vartypes/enhanced/TimeLine.cpp
 	#${shared_dir}/vartypes/enhanced/TimeVar.cpp
-
 )
 
 #only ones that need to be moc'ed

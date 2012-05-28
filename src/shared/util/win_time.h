@@ -1,6 +1,8 @@
 #ifndef WIN_TIME_H
 #define WIN_TIME_H
+#define NOGDI
 #include <Windows.h>
+#include <winsock.h>
 #include <time.h>
 const __int64 DELTA_EPOCH_IN_MICROSECS= 11644473600000000;
 

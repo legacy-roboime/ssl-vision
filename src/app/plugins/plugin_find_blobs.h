@@ -33,9 +33,9 @@ protected:
   YUVLUT * lut;
   int max_regions;
 
-  VarTypes::VarList * _settings;
-  VarTypes::VarInt * _v_min_blob_area;
-  VarTypes::VarBool * _v_enable;
+  VarList * _settings;
+  VarInt * _v_min_blob_area;
+  VarBool * _v_enable;
 public:
     PluginFindBlobs(FrameBuffer * _buffer, YUVLUT * _lut, int _max_regions);
 

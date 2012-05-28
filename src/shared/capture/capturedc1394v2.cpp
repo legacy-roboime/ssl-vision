@@ -20,10 +20,6 @@
 //========================================================================
 #include "capturedc1394v2.h"
 
-#ifdef _WIN32
-#define VarInt VarTypes::VarInt
-#endif
-
 GlobalCaptureDC1394instanceManager* GlobalCaptureDC1394instanceManager::pinstance = 0;
 
 dc1394_t* GlobalCaptureDC1394instanceManager::obtainInstance() {

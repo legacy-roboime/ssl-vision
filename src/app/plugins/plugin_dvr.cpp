@@ -383,7 +383,7 @@ PluginDVR::PluginDVR(FrameBuffer * fb)
   trigger_pause_refresh=false;
   stream.clear();
  _settings = new VarList("DVR Settings");
-  _max_frames = new VarTypes::VarInt("Max Frames",250);
+  _max_frames = new VarInt("Max Frames",250);
   _max_frames->setMin(0);
   _shift_on_exceed = new VarBool("Shift Video On Exceeding",true);
   _settings->addChild(_max_frames);

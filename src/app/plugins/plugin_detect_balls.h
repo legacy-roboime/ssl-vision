@@ -38,58 +38,58 @@ class PluginDetectBalls;
 class PluginDetectBallsSettings {
 friend class PluginDetectBalls; 
 protected:
-  VarTypes::VarList * _settings;
+  VarList * _settings;
 
-  VarTypes::VarInt    * _max_balls;
-  VarTypes::VarString * _color_label;
-  VarTypes::VarList   * _filter_general;
-  VarTypes::VarDouble * _ball_z_height;
-  VarTypes::VarInt    * _ball_min_width;
-  VarTypes::VarInt    * _ball_max_width;
-  VarTypes::VarInt    * _ball_min_height;
-  VarTypes::VarInt    * _ball_max_height;
-  VarTypes::VarInt    * _ball_min_area;
-  VarTypes::VarInt    * _ball_max_area;
+  VarInt    * _max_balls;
+  VarString * _color_label;
+  VarList   * _filter_general;
+  VarDouble * _ball_z_height;
+  VarInt    * _ball_min_width;
+  VarInt    * _ball_max_width;
+  VarInt    * _ball_min_height;
+  VarInt    * _ball_max_height;
+  VarInt    * _ball_min_area;
+  VarInt    * _ball_max_area;
 
-  VarTypes::VarList * _filter_gauss;
-  VarTypes::VarBool * _ball_gauss_enabled;
-  VarTypes::VarInt  * _ball_gauss_min;
-  VarTypes::VarInt  * _ball_gauss_max;
-  VarTypes::VarDouble * _ball_gauss_stddev;
+  VarList * _filter_gauss;
+  VarBool * _ball_gauss_enabled;
+  VarInt  * _ball_gauss_min;
+  VarInt  * _ball_gauss_max;
+  VarDouble * _ball_gauss_stddev;
 
-  VarTypes::VarList   * _filter_too_near_robot;
-  VarTypes::VarBool   * _ball_too_near_robot_enabled;
-  VarTypes::VarDouble * _ball_too_near_robot_dist;
-  VarTypes::VarList   * _filter_histogram;
-  VarTypes::VarBool   * _ball_histogram_enabled;
-  VarTypes::VarDouble * _ball_histogram_min_greenness;
-  VarTypes::VarDouble * _ball_histogram_max_markeryness;
-  VarTypes::VarList   * _filter_geometry;
-  VarTypes::VarBool   * _ball_on_field_filter;
-  VarTypes::VarDouble * _ball_on_field_filter_threshold;
-  VarTypes::VarBool   * _ball_in_goal_filter;
+  VarList   * _filter_too_near_robot;
+  VarBool   * _ball_too_near_robot_enabled;
+  VarDouble * _ball_too_near_robot_dist;
+  VarList   * _filter_histogram;
+  VarBool   * _ball_histogram_enabled;
+  VarDouble * _ball_histogram_min_greenness;
+  VarDouble * _ball_histogram_max_markeryness;
+  VarList   * _filter_geometry;
+  VarBool   * _ball_on_field_filter;
+  VarDouble * _ball_on_field_filter_threshold;
+  VarBool   * _ball_in_goal_filter;
 
 public:
   PluginDetectBallsSettings() {
 
   _settings=new VarList("Ball Detection");
 
-  _settings->addChild(_max_balls = new VarTypes::VarInt("Max Ball Count",10));
+  _settings->addChild(_max_balls = new VarInt("Max Ball Count",10));
   _settings->addChild(_color_label = new VarString("Ball Color","Orange"));
 
   _settings->addChild(_filter_general = new VarList("Ball Properties"));
     _filter_general->addChild(_ball_z_height = new VarDouble("Ball Z-Height", 30.0));
-    _filter_general->addChild(_ball_min_width = new VarTypes::VarInt("Min Width (pixels)", 3));
-    _filter_general->addChild(_ball_max_width = new VarTypes::VarInt("Max Width (pixels)", 30));
-    _filter_general->addChild(_ball_min_height = new VarTypes::VarInt("Min Height (pixels)", 3));
-    _filter_general->addChild(_ball_max_height = new VarTypes::VarInt("Max Height (pixels)", 30));
-    _filter_general->addChild(_ball_min_area = new VarTypes::VarInt("Min Area (sq-pixels)", 9));
-    _filter_general->addChild(_ball_max_area = new VarTypes::VarInt("Max Area (sq-pixels)", 1000));    
+    _filter_general->addChild(_ball_min_width = new VarInt("Min Width (pixels)", 3));
+    _filter_general->addChild(_ball_max_width = new VarInt("Max Width (pixels)", 30));
+    _filter_general->addChild(_ball_min_height = new VarInt("Min Height (pixels)", 3));
+    _filter_general->addChild(_ball_max_height = new VarInt("Max Height (pixels)", 30));
+    _filter_general->addChild(_ball_min_area = new VarInt("Min Area (sq-pixels)", 9));
+    _filter_general->addChild(_ball_max_area = new VarInt("Max Area (sq-pixels)", 1000));    
 
   _settings->addChild(_filter_gauss = new VarList("Gaussian Size Filter"));
     _filter_gauss->addChild(_ball_gauss_enabled = new VarBool("Enable Filter",true));
-    _filter_gauss->addChild(_ball_gauss_min = new VarTypes::VarInt("Expected Min Area (sq-pixels)", 30));
-    _filter_gauss->addChild(_ball_gauss_max = new VarTypes::VarInt("Expected Max Area (sq-pixels)", 40));
+    _filter_gauss->addChild(_ball_gauss_min = new VarInt("Expected Min Area (sq-pixels)", 30));
+    _filter_gauss->addChild(_ball_gauss_max = new VarInt("Expected Max Area (sq-pixels)", 40));
     _filter_gauss->addChild(_ball_gauss_stddev = new VarDouble("Expected Area StdDev (sq-pixels)", 10.0));
 
   _settings->addChild(_filter_too_near_robot = new VarList("Near Robot Filter"));

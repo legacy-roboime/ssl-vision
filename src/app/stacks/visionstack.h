@@ -21,9 +21,9 @@
 #ifndef VISIONSTACK_H
 #define VISIONSTACK_H
 
+#include "timer.h"
 #include "visionplugin.h"
 #include "framedata.h"
-#include "timer.h"
 using namespace std;
 
 /*!

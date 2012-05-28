@@ -7,10 +7,6 @@
 #include "field.h"
 #include "geomalgo.h"
 
-#ifdef _WIN32
-#define VarInt VarTypes::VarInt
-#endif
-
 CameraParameters::CameraParameters(RoboCupCalibrationHalfField & _field) : field(_field), p_alpha(Eigen::VectorXd(1))
 {
   focal_length = new VarDouble("focal length", 500.0);

@@ -40,8 +40,8 @@ CaptureGenerator::CaptureGenerator ( VarList * _settings ) : CaptureInterface ( 
 
   //=======================CAPTURE SETTINGS==========================
   capture_settings->addChild ( v_framerate = new VarDouble ( "Framerate (FPS)", 60.0 ) );
-  capture_settings->addChild ( v_width = new VarTypes::VarInt ( "Width (pixels)", 780 ) );
-  capture_settings->addChild ( v_height = new VarTypes::VarInt ( "Height (pixels)", 580 ) );
+  capture_settings->addChild ( v_width = new VarInt ( "Width (pixels)", 780 ) );
+  capture_settings->addChild ( v_height = new VarInt ( "Height (pixels)", 580 ) );
   capture_settings->addChild ( v_test_image = new VarBool ( "Generate Color Test Image", false ) );
 }
 

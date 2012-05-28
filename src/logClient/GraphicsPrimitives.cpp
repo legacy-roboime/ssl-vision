@@ -20,7 +20,7 @@
 */
 //========================================================================
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS
 #define _USE_MATH_DEFINES
 #include <cmath>
 #else

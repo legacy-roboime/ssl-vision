@@ -19,12 +19,12 @@
 */
 //========================================================================
 
+#include "timer.h"
 #include <VarDouble.h>
 #include <VarList.h>
 #include <quaternion.h>
 #include <Eigen/Core>
 #include "field.h"
-#include "timer.h"
 
 #ifndef CAMERA_CALIBRATION_H
 #define CAMERA_CALIBRATION_H
@@ -163,12 +163,12 @@ public:
       VarDouble* cov_ls_x;
       VarDouble* cov_ls_y;
       
-      VarTypes::VarInt* pointsPerLine;
-      VarTypes::VarInt* pointsInsideGoal;
-      VarTypes::VarInt* pointsInsideCenterCircle;
-      VarTypes::VarInt* pointsOnCenterCircle;
-      VarTypes::VarInt* pointsOnDefenseAreaArc;
-      VarTypes::VarInt* pointsOnDefenseStretch;
+      VarInt* pointsPerLine;
+      VarInt* pointsInsideGoal;
+      VarInt* pointsInsideCenterCircle;
+      VarInt* pointsOnCenterCircle;
+      VarInt* pointsOnDefenseAreaArc;
+      VarInt* pointsOnDefenseStretch;
   };
   
   /*!

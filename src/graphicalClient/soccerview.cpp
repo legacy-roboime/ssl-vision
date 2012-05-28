@@ -31,7 +31,7 @@ const int GLSoccerView::PreferedHeight = 768;
 const double GLSoccerView::MinRedrawInterval = 0.016; ///Minimum time between graphics updates (limits the fps)
 const int GLSoccerView::unknownRobotID = -1;
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS
 #define snprintf _snprintf
 #endif
 

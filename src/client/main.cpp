@@ -24,10 +24,10 @@
 //#include <QPlastiqueStyle>
 //#include "mainwindow.h"
 
+#include "timer.h"
 #include <stdio.h>
 #include <QThread>
 #include "robocup_ssl_client.h"
-#include "timer.h"
 
 #include "messages_robocup_ssl_detection.pb.h"
 #include "messages_robocup_ssl_geometry.pb.h"

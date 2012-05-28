@@ -24,6 +24,7 @@
 #else
 #include <math.h>
 #endif
+#include "timer.h"
 #include <QMouseEvent>
 #include <QWidget>
 #include <QGLWidget>
@@ -36,7 +37,6 @@
 #include <cstdio>
 #include "robocup_ssl_client.h"
 #include "field_default_constants.h"
-#include "timer.h"
 #include "geometry.h"
 #include "util.h"
 #include "gltext.h"

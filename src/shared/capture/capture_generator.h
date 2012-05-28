@@ -59,13 +59,13 @@ protected:
   //processing variables:
   VarStringEnum * v_colorout;
 
-  VarTypes::VarList * capture_settings;
-  VarTypes::VarList * conversion_settings;
+  VarList * capture_settings;
+  VarList * conversion_settings;
 
-  VarTypes::VarInt * v_width;
-  VarTypes::VarInt * v_height;
-  VarTypes::VarDouble * v_framerate;
-  VarTypes::VarBool * v_test_image;
+  VarInt * v_width;
+  VarInt * v_height;
+  VarDouble * v_framerate;
+  VarBool * v_test_image;
   
 public:
 #ifndef VDATA_NO_QT

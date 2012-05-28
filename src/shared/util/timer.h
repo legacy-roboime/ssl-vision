@@ -76,7 +76,7 @@ public:
   \author  James R. Bruce, (C) 1999-2002
 */
 //TODO: make the following work on windows
-#ifndef _WIN32
+#ifndef HAVE_WINDOWS
 class AccumulativeTimer{
   timeval tv1,tv2;
   double total;
@@ -185,7 +185,7 @@ inline double GetTimeSec()
 }
 
 //TODO: make the following compile on windows
-#ifndef _WIN32
+#ifndef HAVE_WINDOWS
 inline void GetDate(struct tm &date)
 {
   time_t t = time(NULL);

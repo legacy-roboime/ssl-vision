@@ -20,10 +20,6 @@
 //========================================================================
 #include "cmpattern_team.h"
 
-#ifdef _WIN32
-#define VarInt VarTypes::VarInt
-#endif
-
 namespace CMPattern {
 
 void Team::slotTeamNameChanged() {

@@ -21,11 +21,11 @@
 #ifndef PLUGIN_SSLNETWORKOUTPUT_H
 #define PLUGIN_SSLNETWORKOUTPUT_H
 
+#include "timer.h"
 #include <visionplugin.h>
 #include "robocup_ssl_server.h"
 #include "camera_calibration.h"
 #include "field.h"
-#include "timer.h"
 
 /**
 	@author Stefan Zickler
@@ -49,7 +49,7 @@ class PluginSSLNetworkOutputSettings {
 public:
   VarList * settings;
   VarString * multicast_address;
-  VarTypes::VarInt * multicast_port;
+  VarInt * multicast_port;
   VarString * multicast_interface;
 
   PluginSSLNetworkOutputSettings();

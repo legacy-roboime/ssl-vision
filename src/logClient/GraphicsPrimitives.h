@@ -23,6 +23,7 @@
 #ifndef GRAPHICS_PRIMITIVES_H
 #define GRAPHICS_PRIMITIVES_H
 
+#include "timer.h"
 #include <QGraphicsItem>
 #include <QGraphicsPathItem>
 #include <QVector>
@@ -35,7 +36,6 @@
 #include <QtGui/QPushButton>
 #include "field_default_constants.h"
 #include "robocup_ssl_client.h"
-#include "timer.h"
 
 const int teamUnknown = 0;
 const int teamBlue = 1;

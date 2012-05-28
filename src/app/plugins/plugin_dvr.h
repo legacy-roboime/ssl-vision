@@ -21,6 +21,7 @@
 #ifndef plugin_dvr_H
 #define plugin_dvr_H
 
+#include "timer.h"
 #include <visionplugin.h>
 #include "robocup_ssl_server.h"
 #include "camera_calibration.h"
@@ -39,7 +40,6 @@
 #include <QProgressDialog>
 #include <QDir>
 
-#include "timer.h"
 #include "rawimage.h"
 #include "image.h"
 #include "jog_dial.h"
@@ -155,9 +155,9 @@ protected:
   DVRModeEnum mode;
   SeekModeEnum seek_mode;
   bool is_recording;
-  VarTypes::VarList * _settings;
-  VarTypes::VarInt * _max_frames;
-  VarTypes::VarBool * _shift_on_exceed;
+  VarList * _settings;
+  VarInt * _max_frames;
+  VarBool * _shift_on_exceed;
   PluginDVRWidget * w;
 
   double advance_last_t;

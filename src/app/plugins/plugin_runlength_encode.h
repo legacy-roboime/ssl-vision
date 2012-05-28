@@ -21,9 +21,9 @@
 #ifndef PLUGIN_RUNLENGTHENCODE_H
 #define PLUGIN_RUNLENGTHENCODE_H
 
+#include "timer.h"
 #include <visionplugin.h>
 #include "cmvision_region.h"
-#include "timer.h"
 
 /**
 	@author Stefan Zickler

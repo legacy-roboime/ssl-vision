@@ -23,12 +23,12 @@
 #ifndef VIEWUPDATETHREAD_H
 #define VIEWUPDATETHREAD_H
 
+#include "timer.h"
 #include <QThread>
 #include <QVector>
 #include <QPointF>
 #include "GraphicsPrimitives.h"
 #include "robocup_ssl_client.h"
-#include "timer.h"
 #include "LogControl.h"
 
 class ViewUpdateThread : public QThread

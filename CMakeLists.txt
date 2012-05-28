@@ -3,10 +3,18 @@ cmake_minimum_required(VERSION 2.8)
 
 #defines
 if(MSVC)
+	add_definitions(-DHAVE_WINDOWS)
 else()
-	add_definitions(-D UNIX)
-	add_definitions(-D LINUX)
-	add_definitions(-D _GNU_SOURCE)
+	# we are defining UNIX for mac too, is that ok?
+	add_definitions(-DUNIX)
+	if(APPLE)
+		add_definitions(-DHAVE_MACOSX)
+	else()
+		add_definitions(-DHAVE_LINUX)
+		add_definitions(-DLINUX)
+		# why this? can't other compilers be used on linux?
+		add_definitions(-D_GNU_SOURCE)
+	endif()
 endif()
 
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
@@ -93,23 +101,21 @@ qt4_add_resources(RC_SRCS
 
 ## generate moc files for graphicalClient
 qt4_wrap_cpp(LCLIENT_MOC_SRCS
-    src/logClient/CentralWindow.h
-    src/logClient/ClientThreading.h
-    src/logClient/GraphicsPrimitives.h
-    src/logClient/LogControl.h
+	src/logClient/CentralWindow.h
+	src/logClient/ClientThreading.h
+	src/logClient/GraphicsPrimitives.h
+	src/logClient/LogControl.h
 )
 
 ## generate moc files for graphicalClient2
 qt4_wrap_cpp(GCLIENT_MOC_SRCS
-    src/graphicalClient/soccerview.h
+	src/graphicalClient/soccerview.h
 )
 
 ## shared qt wrappings
-
 qt4_wrap_cpp(SHARED_MOC_SRCS
 	${SHARED_HEADERS}
 )
-
 qt4_add_resources(SHARED_RC_SRCS 
 	${SHARED_RC}
 )
@@ -144,20 +150,35 @@ endif()
 
 
 ## build the common code
-add_library(sslvision ${SHARED_MOC_SRCS} ${SHARED_RC_SRCS} ${CC_PROTO} ${SHARED_SRCS})
-add_dependencies(sslvision GenerateProto)
+add_library(sslvision
+	${SHARED_MOC_SRCS}
+	${SHARED_RC_SRCS}
+	${CC_PROTO}
+	${SHARED_SRCS}
+)
 
 #TODO: add PNG and JPEG libraries
-set(libs ${QT_LIBRARIES} ${shared_libs} sslvision)
+set(libs
+	${QT_LIBRARIES}
+	${shared_libs}
+	sslvision
+)
 
 ## build the main app
 set(target vision)
-add_executable(${target} ${UI_SRCS} ${MOC_SRCS} ${RC_SRCS} ${SRCS})
+add_executable(${target}
+	${UI_SRCS}
+	${MOC_SRCS}
+	${RC_SRCS}
+	${SRCS}
+)
 target_link_libraries(${target} ${libs})
 
 ##build non graphical client
 set(client client)
-add_executable(${client} src/client/main.cpp )
+add_executable(${client}
+	src/client/main.cpp
+)
 target_link_libraries(${client} ${libs})
 
 ##build logging client
@@ -174,9 +195,9 @@ target_link_libraries(${lclient} ${libs})
 ##build graphical client
 set(gclient graphicalClient)
 add_executable(${gclient} ${GCLIENT_MOC_SRCS}
-  src/graphicalClient/main.cpp
-  src/graphicalClient/soccerview.cpp
-  src/graphicalClient/gltext.cpp
+	src/graphicalClient/main.cpp
+	src/graphicalClient/soccerview.cpp
+	src/graphicalClient/gltext.cpp
 )
 target_link_libraries(${gclient} ${libs})
 

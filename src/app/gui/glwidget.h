@@ -21,7 +21,7 @@
 #ifndef GLWIDGET_H_
 #define GLWIDGET_H_
 
-
+#include "plugin_visualize.h"
 #include <QtOpenGL/QGLWidget>
 #include <QTime>
 #include <QMutex>
@@ -40,7 +40,6 @@
 #include "colorpicker.h"
 #include "visionstack.h"
 #include <QWidgetAction>
-#include "plugin_visualize.h"
 
 /*!
   \class   GLWidget

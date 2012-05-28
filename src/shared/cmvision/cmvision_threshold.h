@@ -22,11 +22,11 @@
 #ifndef CMVISIONTHRESHOLD_H
 #define CMVISIONTHRESHOLD_H
 
+#include "timer.h"
 #include "lut3d.h"
 #include "image_interface.h"
 #include "image.h"
 #include "colors.h"
-#include "timer.h"
 
 /**
 	@author James Bruce (Original CMVision implementation and algorithms),
