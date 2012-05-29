@@ -11,6 +11,7 @@
 > Version 3 in the file COPYING that came with this distribution.
 > If not, see &lt;<http://www.gnu.org/licenses/>&gt;.
 
+
 RoboCup Small Size League Shared Vision System 
 ==============================================
 
@@ -44,7 +45,8 @@ Software Requirements
 - libpng
 
 To get all of these packages in (k)ubuntu, run:
-sudo apt-get install g++ libqt4-dev libeigen2-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev cmake
+
+``sudo apt-get install g++ libqt4-dev libeigen2-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev cmake``
 
 
 Hardware Requirements
