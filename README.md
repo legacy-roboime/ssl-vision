@@ -34,7 +34,7 @@ Software Requirements
 ---------------------
 
 - cmake >= 2.8
-- g++ or vc++
+- g++, clang++ or vc++
 - QT >= 4.8 with opengl and networking support
 - Eigen2 or Eigen3
 - Google protocol buffers (protoc)
@@ -47,6 +47,10 @@ Software Requirements
 To get all of these packages in (k)ubuntu, run:
 
 ``sudo apt-get install g++ libqt4-dev libeigen2-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev cmake``
+
+For gentoo users the following should suffice:
+
+``sudo emerge cmake qt-core qt-gui qt-opengl eigen protobuf opengl libdc1394 libpng``
 
 
 Hardware Requirements
