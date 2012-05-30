@@ -18,7 +18,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/standard2010.png
+				../patterns/teams/standard2010.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -363,7 +363,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/cmdragons.png
+				../patterns/teams/cmdragons.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -536,7 +536,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/cmdragons_mini.png
+				../patterns/teams/cmdragons_mini.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -709,7 +709,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/cmdragons_white.png
+				../patterns/teams/cmdragons_white.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -882,7 +882,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/CMDragons.png
+				../patterns/teams/CMDragons.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -1055,7 +1055,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/RoboJackets.png
+				../patterns/teams/RoboJackets.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -1228,7 +1228,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/RFC.png
+				../patterns/teams/RFC.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -1401,7 +1401,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/parsian.png
+				../patterns/teams/parsian.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -1574,7 +1574,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/robofei.png
+				../patterns/teams/robofei.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -1747,7 +1747,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/kiks.png
+				../patterns/teams/kiks.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -1920,7 +1920,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/austrian_cubes.png
+				../patterns/teams/austrian_cubes.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -2093,7 +2093,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/skuba.png
+				../patterns/teams/skuba.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
@@ -2266,7 +2266,7 @@
 				true
 			</Var>
 			<Var name="Marker Image File" type="string">
-				patterns/teams/austrian_cubes.png
+				../patterns/teams/austrian_cubes.png
 			</Var>
 			<Var name="Marker Image Rows" type="int" minval="" maxval="">
 				3
