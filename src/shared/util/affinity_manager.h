@@ -50,7 +50,9 @@ public:
     }
   };
 protected:
-    //pthread_mutex_t * _mutex;
+#ifdef USE_AFFINITY_MANAGER
+    pthread_mutex_t * _mutex;
+#endif
     vector<PhysicalCore> cores;
     int max_cpu_id;
     int parseFileUpTo(FILE * f, char * output, int len, char end);
