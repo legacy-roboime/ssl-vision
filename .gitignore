@@ -1,8 +1,7 @@
 ##
-# ignore bin and build but let them be empty
+# ignore bin and build* dirs
 
 bin/*
-!bin/.gitkeep
 
 build/*
 build*/*
