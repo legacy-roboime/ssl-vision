@@ -26,8 +26,8 @@ const double GLSoccerView::maxZValue = 10;
 const double GLSoccerView::FieldZ = 1.0;
 const double GLSoccerView::RobotZ = 2.0;
 const double GLSoccerView::BallZ = 3.0;
-const int GLSoccerView::PreferedWidth = 1024;
-const int GLSoccerView::PreferedHeight = 768;
+const int GLSoccerView::PreferedWidth = 853;
+const int GLSoccerView::PreferedHeight = 533;
 const double GLSoccerView::MinRedrawInterval = 0.016; ///Minimum time between graphics updates (limits the fps)
 const int GLSoccerView::unknownRobotID = -1;
 

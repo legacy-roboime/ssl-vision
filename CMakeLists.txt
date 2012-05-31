@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 #defines
 if(MSVC)
 	add_definitions(-DHAVE_WINDOWS)
+	set(gui_option WIN32)
 else()
 	# we are defining UNIX for mac too, is that ok?
 	add_definitions(-DUNIX)
@@ -195,7 +196,8 @@ target_link_libraries(${lclient} ${libs})
 
 ##build graphical client
 set(gclient graphicalClient)
-add_executable(${gclient} ${GCLIENT_MOC_SRCS}
+add_executable(${gclient} ${gui_option}
+	${GCLIENT_MOC_SRCS}
 	src/graphicalClient/main.cpp
 	src/graphicalClient/soccerview.cpp
 	src/graphicalClient/gltext.cpp
