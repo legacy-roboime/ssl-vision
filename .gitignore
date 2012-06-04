@@ -8,3 +8,8 @@
 /build*/*
 !/build/.gitkeep
 
+##
+# Mac OSX
+
+.DS_STORE
+
