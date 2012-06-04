@@ -74,13 +74,8 @@ MultiStackRoboCupSSL::~MultiStackRoboCupSSL() {
 void MultiStackRoboCupSSL::RefreshNetworkOutput()
 {
   udp_server->mutex.lock();
-  udp_server->close();
   udp_server->change_port(global_network_output_settings->multicast_port->getInt());
   udp_server->change_address(global_network_output_settings->multicast_address->getString());
   udp_server->change_interface(global_network_output_settings->multicast_interface->getString());
-  if (udp_server->open()==false) {
-    fprintf(stderr,"ERROR WHEN TRYING TO OPEN UDP NETWORK SERVER!\n");
-    fflush(stderr);
-  }
   udp_server->mutex.unlock();
 }

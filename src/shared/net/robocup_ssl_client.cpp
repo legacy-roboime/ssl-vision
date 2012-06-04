@@ -21,6 +21,9 @@
 //========================================================================
 #include "robocup_ssl_client.h"
 #include <QtNetwork>
+#include <iostream>
+
+using namespace std;
 
 RoboCupSSLClient::RoboCupSSLClient(const quint16 & port, const string & net_address, const string & net_interface) :
     _socket(new QUdpSocket()),
@@ -51,27 +54,19 @@ void RoboCupSSLClient::close()
         _socket->leaveMulticastGroup(*_net_address, *_net_interface);
 }
 
-//deprecated
-bool RoboCupSSLClient::open(bool blocking)
-{
-    return open();
-}
-
 bool RoboCupSSLClient::open()
 {
     close();
-
-    bool success = _socket->bind(_port, QUdpSocket::ShareAddress);
-    if(!success) {
-        fprintf(stderr,"Unable to open UDP network port: %d\n",_port);
-        fflush(stderr);
+    if(!_socket->bind(_port, QUdpSocket::ShareAddress)) {
+        cerr << "Unable to bind UDP socket on port " << _port << ". "
+             << _socket->errorString().toStdString() << '.' << endl;
         return false;
     }
 
-    success = _socket->joinMulticastGroup(*_net_address, *_net_interface);
-    if(!success) {
-        fprintf(stderr,"Unable to setup UDP multicast\n");
-        fflush(stderr);
+    if(!_socket->joinMulticastGroup(*_net_address, *_net_interface)) {
+        cerr << "Unable to join UDP multicast on "
+             << _net_address->toString().toStdString() << ':' << _port << ". "
+             << _socket->errorString().toStdString().c_str() << '.' << endl;
         return false;
     }
 
@@ -80,16 +75,16 @@ bool RoboCupSSLClient::open()
 
 bool RoboCupSSLClient::receive(SSL_WrapperPacket & packet)
 {
-    if (_socket->hasPendingDatagrams()) {
+    if(_socket->hasPendingDatagrams()) {
         QByteArray datagram;
         mutex.lock();
         datagram.resize(_socket->pendingDatagramSize());
         _socket->readDatagram(datagram.data(), datagram.size());
         mutex.unlock();
-        fflush(stdout);
         //decode packet:
         return packet.ParseFromArray(datagram.data(), datagram.size());
+    } else {
+        return false;
     }
-    return false;
 }
 
