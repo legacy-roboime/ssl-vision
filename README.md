@@ -11,15 +11,14 @@
 > Version 3 in the file COPYING that came with this distribution.
 > If not, see &lt;<http://www.gnu.org/licenses/>&gt;.
 
+[ssl-vision](http://github.com/roboime/ssl-vision/)
+===================================================
 
-RoboCup Small Size League Shared Vision System 
-==============================================
+RoboCup Small Size League Shared Vision System
+----------------------------------------------
 
-ssl-vision
-
-[This](http://github.com/roboime/ssl-vision/) is a fork which
-intends to add compatibility for Windows, and possibly Mac OSX.
-The official repo is available [here](http://code.google.com/p/ssl-vision/).
+This is a fork which intends to add compatibility for Windows, and
+possibly Mac OSX. The official repo is available [here](http://code.google.com/p/ssl-vision/).
 
 
 Online Documentation
@@ -44,13 +43,13 @@ Software Requirements
 - libjpeg
 - libpng
 
-To get all of these packages in (k)ubuntu, run:
+To get all of these packages in ubuntu/debian variants, run:
 
 ``sudo apt-get install g++ libqt4-dev libeigen2-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev cmake``
 
 For gentoo users the following should suffice:
 
-``sudo emerge cmake qt-core qt-gui qt-opengl eigen protobuf opengl libdc1394 libpng``
+``sudo emerge cmake qt-core qt-gui qt-opengl eigen protobuf opengl libdc1394``
 
 
 Hardware Requirements
@@ -78,7 +77,13 @@ cd build
 cmake .. -i #for interactive mode
 ```
 
-On Mac and Windows it may be easier to use cmake-gui, choosing
+On Windows it's possible to use:
+
+``make_vcproj``
+
+that script will call cmake-gui.
+
+Also on Mac and Windows one can also use cmake-gui directly, choosing
 the project root as the source directory, and build folder as
 build directory.
 
@@ -100,6 +105,9 @@ Running
    Note that it's better to go to the ./bin dir first since some .xml's
    will be generated and for organization sake they shouldn't be on
    the root of the project not to mix with the source nor build system.
+
+   Alternatively open it from your file manager, this works for all OS's,
+   though on linux you won't see the stdout this way.
 
 
 Starting to Capture and Setting Parameters
