@@ -30,7 +30,7 @@ include_directories(${PROJECT_BINARY_DIR})
 
 include(${QT_USE_FILE})
 
-include(src/shared/CMakeLists.txt.inc)
+include(src/shared/CMakeLists.txt.in)
 
 include_directories(${PROJECT_SOURCE_DIR}/src/app)
 include_directories(${PROJECT_SOURCE_DIR}/src/app/gui)
