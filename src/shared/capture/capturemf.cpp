@@ -20,9 +20,18 @@
 //========================================================================
 #ifdef USE_MMF
 #include "capturemf.h"
+#include <Windows.h>
+#include <mfapi.h>
+#include <mfidl.h>
+
+//for debugging:
+#include <iostream>
+using namespace std;
 
 struct CaptureMFImpl
 {
+    VarList *conv_opts;
+    VarList *capt_opts;
     //TODO
 };
 
@@ -30,6 +39,8 @@ CaptureMF::CaptureMF(VarList *_settings) :
     CaptureInterface(_settings),
     impl(new CaptureMFImpl())
 {
+    settings->addChild(impl->conv_opts = new VarList("Conversion Settings"));
+    settings->addChild(impl->capt_opts = new VarList("Capture Settings"));
     //TODO
 }
 
@@ -57,14 +68,35 @@ void CaptureMF::releaseFrame()
 
 bool CaptureMF::startCapture()
 {
-    //TODO
-    return false;
+    HRESULT hr = S_OK;
+    IMFAttributes *pAttributes = NULL;
+
+    // Initialize an attribute store to specify enumeration parameters.
+    hr = MFCreateAttributes(&pAttributes, 1);
+    if(FAILED(hr)) return false;
+
+    // Ask for source type = video capture devices.
+    hr = pAttributes->SetGUID(
+        MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE,
+        MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID
+    );
+    if(FAILED(hr)) return false;
+
+    // Enumerate devices.
+    IMFActivate **ppDevices;
+    UINT32 count;
+    hr = MFEnumDeviceSources(pAttributes, &ppDevices, &count);
+    if(FAILED(hr)) return false;
+
+    //TODO: match device from settings or use the first if no settings
+    cout << "Devices: " << count << endl;
+    return true;
 }
 
 bool CaptureMF::stopCapture()
 {
     //TODO
-    return false;
+    return true;
 }
 
 bool CaptureMF::resetBus()
