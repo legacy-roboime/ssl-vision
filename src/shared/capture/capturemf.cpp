@@ -32,15 +32,66 @@ struct CaptureMFImpl
 {
     VarList *conv_opts;
     VarList *capt_opts;
+    VarStringEnum *dev_opts;
+    IMFActivate **ppDevices;
+    UINT32 count;
     //TODO
+
+    CaptureMFImpl(VarList *settings) {
+        settings->addChild(conv_opts = new VarList("Conversion Settings"));
+        settings->addChild(capt_opts = new VarList("Capture Settings"));
+        capt_opts->addChild(dev_opts = new VarStringEnum("Device"));
+    }
+
+    bool enumerateDevices() {
+        HRESULT hr = S_OK;
+        IMFAttributes *pAttributes = NULL;
+
+        // Initialize an attribute store to specify enumeration parameters.
+        hr = MFCreateAttributes(&pAttributes, 1);
+        if(FAILED(hr)) return false;
+
+        // Ask for source type = video capture devices.
+        hr = pAttributes->SetGUID(
+            MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE,
+            MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID
+        );
+        if(FAILED(hr)) return false;
+
+        // Enumerate devices.
+        hr = MFEnumDeviceSources(pAttributes, &ppDevices, &count);
+        if(FAILED(hr)) return false;
+        else return true;
+    }
+
+    void populateSettings() {
+        HRESULT hr = S_OK;
+
+        for(UINT32 i = 0; i < count; i++) {
+            WCHAR *szFriendlyName = NULL;
+
+            hr = ppDevices[i]->GetAllocatedString(
+                MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME,
+                &szFriendlyName,
+                NULL
+            );
+            if(FAILED(hr)) break;
+
+            // Since we are not using Unicode, we must convert szFriendlyName
+            wstring wstr(szFriendlyName);
+            dev_opts->addItem(string(wstr.begin(), wstr.end()));
+        }
+    }
 };
 
 CaptureMF::CaptureMF(VarList *_settings) :
     CaptureInterface(_settings),
-    impl(new CaptureMFImpl())
+    impl(new CaptureMFImpl(settings))
 {
-    settings->addChild(impl->conv_opts = new VarList("Conversion Settings"));
-    settings->addChild(impl->capt_opts = new VarList("Capture Settings"));
+    if(impl->enumerateDevices())
+        impl->populateSettings();
+    else
+        cerr << "Couldn't enumerate devices." << endl;
     //TODO
 }
 
@@ -68,29 +119,7 @@ void CaptureMF::releaseFrame()
 
 bool CaptureMF::startCapture()
 {
-    HRESULT hr = S_OK;
-    IMFAttributes *pAttributes = NULL;
-
-    // Initialize an attribute store to specify enumeration parameters.
-    hr = MFCreateAttributes(&pAttributes, 1);
-    if(FAILED(hr)) return false;
-
-    // Ask for source type = video capture devices.
-    hr = pAttributes->SetGUID(
-        MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE,
-        MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID
-    );
-    if(FAILED(hr)) return false;
-
-    // Enumerate devices.
-    IMFActivate **ppDevices;
-    UINT32 count;
-    hr = MFEnumDeviceSources(pAttributes, &ppDevices, &count);
-    if(FAILED(hr)) return false;
-
-    //TODO: match device from settings or use the first if no settings
-    cout << "Devices: " << count << endl;
-    return true;
+    return impl->enumerateDevices();
 }
 
 bool CaptureMF::stopCapture()
