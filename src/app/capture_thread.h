@@ -24,6 +24,9 @@
 #ifdef USE_DC1394
 #include "capturedc1394v2.h"
 #endif
+#ifdef USE_MMF
+#include "capturemf.h"
+#endif
 #include "capturefromfile.h"
 #include "capture_generator.h"
 #include <QThread>
@@ -54,6 +57,9 @@ protected:
 #ifdef USE_DC1394
   CaptureInterface * captureDC1394;
 #endif
+#ifdef USE_MMF
+  CaptureInterface * captureMF;
+#endif
   CaptureInterface * captureFiles;
   CaptureInterface * captureGenerator;
 #ifdef USE_AFFINITY_MANAGER
@@ -63,7 +69,12 @@ protected:
   bool _kill;
   int camId;
   VarList * settings;
+#ifdef USE_DC1394
   VarList * dc1394;
+#endif
+#ifdef USE_MMF
+  VarList * mmf;
+#endif
   VarList * generator;
   VarList * fromfile;
   VarList * control;

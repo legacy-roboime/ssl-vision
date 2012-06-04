@@ -5,6 +5,9 @@ project(ssl-vision)
 #defines
 if(MSVC)
 	add_definitions(-DHAVE_WINDOWS)
+	# use Media Foundation, requires Windows SDK
+	add_definitions(-DUSE_MMF)
+	set(USE_MMF yes)
 	set(gui_option WIN32)
 else()
 	# we are defining UNIX for mac too, is that ok?
@@ -177,6 +180,17 @@ set(libs
 	${shared_libs}
 	sslvision
 )
+
+if(USE_MMF)
+    #TODO: check which libs are really needed
+    list(APPEND libs
+        mfplat
+        mf
+        mfreadwrite
+        mfuuid
+        shlwapi
+    )
+endif()
 
 ## build the main app
 set(target vision)

@@ -35,12 +35,26 @@ CaptureThread::CaptureThread(int cam_id)
   control->addChild( (VarType*) (c_reset  = new VarTrigger("reset bus","Reset")));
   control->addChild( (VarType*) (c_auto_refresh= new VarBool("auto refresh params",true)));
   control->addChild( (VarType*) (c_refresh= new VarTrigger("re-read params","Refresh")));
-  control->addChild( (VarType*) (captureModule= new VarStringEnum("Capture Module","DC 1394")));
+#ifdef USE_DC1394
+  control->addChild( (VarType*) (captureModule= new VarStringEnum("Capture Module","DC1394")));
+#else
+  control->addChild( (VarType*) (captureModule= new VarStringEnum("Capture Module","Generator")));
+#endif
   captureModule->addFlags(VARTYPE_FLAG_NOLOAD_ENUM_CHILDREN);
-  captureModule->addItem("DC 1394");
+#ifdef USE_DC1394
+  captureModule->addItem("DC1394");
+#endif
+#ifdef USE_MMF
+  captureModule->addItem("Media Foundation");
+#endif
   captureModule->addItem("Read from files");
   captureModule->addItem("Generator");
+#ifdef USE_DC1394
   settings->addChild( (VarType*) (dc1394 = new VarList("DC1394")));
+#endif
+#ifdef USE_MMF
+  settings->addChild( (VarType*) (mmf = new VarList("Media Foundation")));
+#endif
   settings->addChild( (VarType*) (fromfile = new VarList("Read from files")));
   settings->addChild( (VarType*) (generator = new VarList("Generator")));
   settings->addFlags( VARTYPE_FLAG_AUTO_EXPAND_TREE );
@@ -56,6 +70,9 @@ CaptureThread::CaptureThread(int cam_id)
   capture=0;
 #ifdef USE_DC1394
   captureDC1394 = new CaptureDC1394v2(dc1394,camId);
+#endif
+#ifdef USE_MMF
+  captureMF = new CaptureMF(mmf);
 #endif
   captureFiles = new CaptureFromFile(fromfile);
   captureGenerator = new CaptureGenerator(generator);
@@ -85,6 +102,9 @@ CaptureThread::~CaptureThread()
 #ifdef USE_DC1394
   delete captureDC1394;
 #endif
+#ifdef USE_MMF
+  delete captureMF;
+#endif
   delete captureFiles;
   delete captureGenerator;
   delete counter;
@@ -109,14 +129,17 @@ void CaptureThread::selectCaptureMethod() {
   string mode = captureModule->getString();
   if(mode == "Read from files") {
     new_capture = captureFiles;
-  } else if(mode == "Generator") {
-    new_capture = captureGenerator;
-  } else {
 #ifdef USE_DC1394
+  } else if(mode == "DC1394") {
     new_capture = captureDC1394;
-#else
-    new_capture = captureGenerator;
 #endif
+#ifdef USE_MMF
+  } else if(mode == "Media Foundation") {
+    new_capture = captureMF;
+#endif
+  } else {
+    //Generator is the standard fallback
+    new_capture = captureGenerator;
   }
 
   if (old_capture!=0 && new_capture!=old_capture && old_capture->isCapturing()) {
