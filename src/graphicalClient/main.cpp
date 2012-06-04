@@ -37,7 +37,7 @@ protected:
   {
     static const double minDuration = 0.01; //100FPS
     RoboCupSSLClient client;
-    client.open(false);
+    client.open();
     SSL_WrapperPacket packet;
     while(runApp) {
       if (client.receive(packet)) {

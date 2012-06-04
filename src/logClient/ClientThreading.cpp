@@ -40,7 +40,7 @@ ViewUpdateThread::ViewUpdateThread ( SoccerView *_soccerView, QMutex* _drawMutex
 
 void ViewUpdateThread::run()
 {
-  client.open ( false );
+  client.open();
   while ( !shutdownView )
   {
     int time = execute();
