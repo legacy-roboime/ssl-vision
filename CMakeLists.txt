@@ -188,7 +188,6 @@ if(USE_MMF)
         mf
         mfreadwrite
         mfuuid
-        shlwapi
     )
 endif()
 
