@@ -21,6 +21,9 @@
 //========================================================================
 #include "robocup_ssl_server.h"
 #include <QtNetwork>
+#include <iostream>
+
+using namespace std;
 
 RoboCupSSLServer::RoboCupSSLServer(const quint16 & port, const string & net_address, const string & net_interface) :
     _socket(new QUdpSocket()),
@@ -99,8 +102,7 @@ bool RoboCupSSLServer::send(const SSL_WrapperPacket & packet)
     bool success = packet.SerializeToArray(datagram.data(), datagram.size());
     if(!success) {
         //TODO: print useful info
-        fprintf(stderr,"Serializing packet to array failed.\n");
-        fflush(stderr);
+        cerr << "Serializing packet to array failed." << endl;
         return false;
     }
 
@@ -108,8 +110,7 @@ bool RoboCupSSLServer::send(const SSL_WrapperPacket & packet)
     quint64 bytes_sent = _socket->writeDatagram(datagram, *_net_address, _port);
     mutex.unlock();
     if (bytes_sent != datagram.size()) {
-        fprintf(stderr,"Sending UDP datagram failed (maybe too large?). Size was: %zu byte(s)\n",datagram.size());
-        fflush(stderr);
+        cerr << "Sending UDP datagram failed (maybe too large?). Size was: " << datagram.size() << "byte(s)." << endl;
         return false;
     }
 
