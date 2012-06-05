@@ -1,14 +1,17 @@
-project(ssl-vision)
 cmake_minimum_required(VERSION 2.8)
+
+project(ssl-vision)
 
 #defines
 if(MSVC)
 	add_definitions(-DHAVE_WINDOWS)
+	set(gui_option WIN32)
 else()
 	# we are defining UNIX for mac too, is that ok?
 	add_definitions(-DUNIX)
 	if(APPLE)
 		add_definitions(-DHAVE_MACOSX)
+		set(gui_option MACOSX_BUNDLE)
 	else()
 		add_definitions(-DHAVE_LINUX)
 		add_definitions(-DUSE_AFFINITY_MANAGER)
@@ -18,7 +21,18 @@ else()
 	endif()
 endif()
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+# Normilizing standard directories
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
+    string(TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
+endforeach()
+set(CMAKE_DEBUG_POSTFIX d)
+set(CMAKE_MINSIZEREL_POSTFIX min)
 
 set(QT_USE_QTNETWORK true)
 set(QT_USE_QTOPENGL true)
@@ -29,7 +43,7 @@ include_directories(${PROJECT_BINARY_DIR})
 
 include(${QT_USE_FILE})
 
-include(src/shared/CMakeLists.txt.inc)
+include(src/shared/CMakeLists.txt.in)
 
 include_directories(${PROJECT_SOURCE_DIR}/src/app)
 include_directories(${PROJECT_SOURCE_DIR}/src/app/gui)
@@ -195,7 +209,8 @@ target_link_libraries(${lclient} ${libs})
 
 ##build graphical client
 set(gclient graphicalClient)
-add_executable(${gclient} ${GCLIENT_MOC_SRCS}
+add_executable(${gclient} ${gui_option}
+	${GCLIENT_MOC_SRCS}
 	src/graphicalClient/main.cpp
 	src/graphicalClient/soccerview.cpp
 	src/graphicalClient/gltext.cpp

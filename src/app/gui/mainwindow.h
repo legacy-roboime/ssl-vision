@@ -26,7 +26,7 @@
 #include "affinity_manager.h"
 #endif
 #include <QtGui>
-#include <qmainwindow.h>
+#include <QMainWindow>
 #include "ui_mainwindow.h"
 #include <QSplitter>
 #include "capture_thread.h"

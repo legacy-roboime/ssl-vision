@@ -1,10 +1,15 @@
 ##
-# ignore bin and build but let them be empty
+# ignore bin, lib and build* dirs
 
-bin/*
-!bin/.gitkeep
+/bin/*
+/lib/*
 
-build/*
-build*/*
-!build/.gitkeep
+/build/*
+/build*/*
+!/build/.gitkeep
+
+##
+# Mac OSX
+
+.DS_STORE
 

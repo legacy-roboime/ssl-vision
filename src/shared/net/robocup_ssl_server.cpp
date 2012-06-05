@@ -31,6 +31,7 @@ RoboCupSSLServer::RoboCupSSLServer(const quint16 & port, const string & net_addr
     _net_address(new QHostAddress(QString(net_address.c_str()))),
     _net_interface(new QNetworkInterface(QNetworkInterface::interfaceFromName(QString(net_interface.c_str()))))
 {
+	_socket->setSocketOption(QAbstractSocket::MulticastTtlOption, 1);
 }
 
 
@@ -65,33 +66,6 @@ void RoboCupSSLServer::change_interface(const string & net_interface)
 {
     delete _net_interface;
     _net_interface = new QNetworkInterface(QNetworkInterface::interfaceFromName(QString(net_interface.c_str())));
-}
-
-void RoboCupSSLServer::close()
-{
-    if(_socket->state() == QUdpSocket::BoundState)
-        _socket->leaveMulticastGroup(*_net_address, *_net_interface);
-}
-
-bool RoboCupSSLServer::open()
-{
-    close();
-
-    bool success = _socket->bind(_port, QUdpSocket::ShareAddress);
-    if(!success) {
-        fprintf(stderr,"Unable to open UDP network port: %d\n",_port);
-        fflush(stderr);
-        return false;
-    }
-
-    success = _socket->joinMulticastGroup(*_net_address, *_net_interface);
-    if(!success) {
-        fprintf(stderr,"Unable to setup UDP multicast\n");
-        fflush(stderr);
-        return false;
-    }
-
-    return true;
 }
 
 bool RoboCupSSLServer::send(const SSL_WrapperPacket & packet)

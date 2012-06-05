@@ -24,6 +24,7 @@
 #include <QApplication>
 #include "soccerview.h"
 #include "timer.h"
+#include "winmain.hpp"
 
 GLSoccerView *view;
 
@@ -36,7 +37,7 @@ protected:
   {
     static const double minDuration = 0.01; //100FPS
     RoboCupSSLClient client;
-    client.open(false);
+    client.open();
     SSL_WrapperPacket packet;
     while(runApp) {
       if (client.receive(packet)) {
@@ -45,6 +46,7 @@ protected:
           view->updateDetection(detection);
         }
         if (packet.has_geometry()) {
+          //TODO: update geometry
         }
       }
       Sleep(minDuration);
@@ -58,7 +60,7 @@ public:
 
 int main(int argc, char **argv)
 {
-  QApplication app(argc, argv);  
+  QApplication app(argc, argv);
   view = new GLSoccerView();
   view->show();
   MyThread thread;
@@ -68,4 +70,5 @@ int main(int argc, char **argv)
   thread.wait();
   return retVal;
 }
+
 

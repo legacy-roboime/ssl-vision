@@ -47,7 +47,6 @@ public:
     ~RoboCupSSLClient();
 
     bool open();
-    bool open(bool blocking);//deprecated
     void close();
     bool receive(SSL_WrapperPacket & packet);
 

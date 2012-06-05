@@ -46,8 +46,6 @@ public:
 
     ~RoboCupSSLServer();
 
-    bool open();
-    void close();
     bool send(const SSL_WrapperPacket & packet);
     bool send(const SSL_DetectionFrame & frame);
     bool send(const SSL_GeometryData & geometry);
