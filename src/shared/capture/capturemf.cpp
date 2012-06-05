@@ -23,76 +23,237 @@
 #include <Windows.h>
 #include <mfapi.h>
 #include <mfidl.h>
-
-//for debugging:
+#include <mfreadwrite.h>
 #include <iostream>
 using namespace std;
 
+string toString(WCHAR *pWString)
+{
+    wstring wstr(pWString);
+    return string(wstr.begin(), wstr.end());
+}
+
+template <class T> void sRelease(T **pp)
+{
+    if(*pp) (*pp)->Release();
+    *pp = NULL;
+}
+
+/// Capture from Microsoft Media Foundation
+
+// Opaque implementation:
+
 struct CaptureMFImpl
 {
-    VarList *conv_opts;
-    VarList *capt_opts;
-    VarStringEnum *dev_opts;
-    IMFActivate **ppDevices;
+    VarList *conversionSettings;
+    VarList *captureSettings;
+    VarStringEnum *deviceSetting;
+    IMFActivate **devices;
+    IMFSourceReader *reader;
+    IMFSample *currentSample;
+    vector<string> deviceNames;
     UINT32 count;
-    //TODO
+    WCHAR *symLink;
+    UINT32 symLinkLength;
+    // this flag is used to prevent releasing
+    // when already released.
+    //TODO: implement a better solution, tearDown should be idempotent
+    bool busy;
 
-    CaptureMFImpl(VarList *settings) {
-        settings->addChild(conv_opts = new VarList("Conversion Settings"));
-        settings->addChild(capt_opts = new VarList("Capture Settings"));
-        capt_opts->addChild(dev_opts = new VarStringEnum("Device"));
+    CaptureMFImpl() :
+        currentSample(0),
+        devices(NULL),
+        reader(NULL),
+        deviceNames(vector<string>()),
+        count(0),
+        symLink(NULL),
+        symLinkLength(0),
+        busy(false)
+    {
+        conversionSettings = new VarList("Conversion Settings");
+        captureSettings = new VarList("Capture Settings");
+
+        string defaultDevice = "";
+        if(enumerateDevices()) {
+            if(deviceNames.size() > 0)
+                defaultDevice = deviceNames[0];
+        } else {
+            cerr << "Couldn't enumerate devices." << endl;
+        }
+
+        deviceSetting = new VarStringEnum("Device", defaultDevice);
+        captureSettings->addChild(deviceSetting);
+        populateSettings();
+    }
+
+    ~CaptureMFImpl() {
+        tearDown();//really?
+        delete conversionSettings;
+        delete captureSettings;
+        delete deviceSetting;
+        //TODO: check for memory leaks maybe
     }
 
     bool enumerateDevices() {
         HRESULT hr = S_OK;
-        IMFAttributes *pAttributes = NULL;
+        IMFAttributes *attributes = NULL;
 
         // Initialize an attribute store to specify enumeration parameters.
-        hr = MFCreateAttributes(&pAttributes, 1);
+        hr = MFCreateAttributes(&attributes, 1);
         if(FAILED(hr)) return false;
 
         // Ask for source type = video capture devices.
-        hr = pAttributes->SetGUID(
+        hr = attributes->SetGUID(
             MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE,
             MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID
         );
         if(FAILED(hr)) return false;
 
         // Enumerate devices.
-        hr = MFEnumDeviceSources(pAttributes, &ppDevices, &count);
+        hr = MFEnumDeviceSources(attributes, &devices, &count);
         if(FAILED(hr)) return false;
-        else return true;
-    }
 
-    void populateSettings() {
-        HRESULT hr = S_OK;
-
+        // Save list of friendly names
         for(UINT32 i = 0; i < count; i++) {
-            WCHAR *szFriendlyName = NULL;
+            WCHAR *friendlyName = NULL;
 
-            hr = ppDevices[i]->GetAllocatedString(
+            hr = devices[i]->GetAllocatedString(
                 MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME,
-                &szFriendlyName,
+                &friendlyName,
                 NULL
             );
             if(FAILED(hr)) break;
 
-            // Since we are not using Unicode, we must convert szFriendlyName
-            wstring wstr(szFriendlyName);
-            dev_opts->addItem(string(wstr.begin(), wstr.end()));
+            // Since we are not using Unicode, we must convert friendlyName to string
+            deviceNames.push_back(toString(friendlyName));
         }
+        return true;
+    }
+
+    void populateSettings() {
+        for(UINT32 i = 0; i < deviceNames.size(); i++)
+            deviceSetting->addItem(string(deviceNames[i]));
+    }
+
+    bool setupDevice(IMFActivate *device) {
+        if(busy) return false;
+        busy = true;
+
+        HRESULT hr = S_OK;
+
+        IMFMediaSource  *source = NULL;
+        IMFAttributes   *attributes = NULL;
+        IMFMediaType    *type = NULL;
+
+        //TODO: Release the current device, if any.
+
+        // Create the media source for the device.
+        hr = device->ActivateObject(
+            __uuidof(IMFMediaSource),
+            (void**)&source
+        );
+        if(FAILED(hr)) goto end;
+
+        // Get the symbolic link.
+        hr = device->GetAllocatedString(
+            MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK,
+            &symLink,
+            &symLinkLength
+        );
+        if(FAILED(hr)) goto end;
+
+        // Create an attribute store to hold initialization settings.
+        hr = MFCreateAttributes(&attributes, 2);
+        if(FAILED(hr)) goto end;
+        hr = attributes->SetUINT32(MF_READWRITE_DISABLE_CONVERTERS, TRUE);
+        if(FAILED(hr)) goto end;
+
+        // Create the source reader.
+        hr = MFCreateSourceReaderFromMediaSource(
+            source,
+            attributes,
+            &reader
+        );
+        if(FAILED(hr)) goto end;
+
+        //TODO: Try to find a suitable output type.
+
+        // Ask for the first sample.
+        DWORD streamFlags;
+        IMFSample *sample;
+        hr = reader->ReadSample(
+            MF_SOURCE_READER_FIRST_VIDEO_STREAM,
+            0,
+            NULL,
+            &streamFlags,
+            NULL,
+            &sample
+        );
+
+    end:
+        if(FAILED(hr)) {
+            if(source)
+                source->Shutdown();
+            tearDown();
+            busy = false;
+        }
+
+        sRelease(&source);
+        sRelease(&attributes);
+        sRelease(&type);
+
+        return SUCCEEDED(hr);
+    }
+
+    void tearDown() {
+        if(!busy) return;
+        sRelease(&reader);
+        CoTaskMemFree(symLink);
+        symLink = NULL;
+        symLinkLength = 0;
+        busy = false;
+    }
+
+    RawImage getImage() {
+        if(!reader) goto fail;
+
+        HRESULT hr = S_OK;
+
+        // read sample from reader
+        DWORD streamFlags;
+        LONGLONG timeStamp;
+        hr = reader->ReadSample(
+            MF_SOURCE_READER_FIRST_VIDEO_STREAM,
+            0,
+            NULL,
+            &streamFlags,
+            &timeStamp,
+            &currentSample
+        );
+        if(FAILED(hr)) goto fail;
+        if(!currentSample) goto fail;
+
+        //TODO: RawImage from IMFSample
+        return RawImage();
+
+    fail:
+        cerr << "Error retrieving sample." << endl;
+        return RawImage();
+    }
+
+    void releaseImage() {
+        if(currentSample) sRelease(&currentSample);
     }
 };
 
+// Public interface:
+
 CaptureMF::CaptureMF(VarList *_settings) :
     CaptureInterface(_settings),
-    impl(new CaptureMFImpl(settings))
+    impl(new CaptureMFImpl())
 {
-    if(impl->enumerateDevices())
-        impl->populateSettings();
-    else
-        cerr << "Couldn't enumerate devices." << endl;
-    //TODO
+    settings->addChild(impl->conversionSettings);
+    settings->addChild(impl->captureSettings);
 }
 
 CaptureMF::~CaptureMF()
@@ -102,29 +263,29 @@ CaptureMF::~CaptureMF()
 
 RawImage CaptureMF::getFrame()
 {
-    //TODO
-    return RawImage();
+    return impl->getImage();
 }
 
 bool CaptureMF::isCapturing()
 {
-    //TODO
-    return false;
+    return impl->busy;
 }
 
 void CaptureMF::releaseFrame()
 {
-    //TODO
+    impl->releaseImage();
 }
 
 bool CaptureMF::startCapture()
 {
-    return impl->enumerateDevices();
+    impl->enumerateDevices();
+    //TODO: call the selected device instead of the first one
+    return impl->setupDevice(impl->devices[0]);
 }
 
 bool CaptureMF::stopCapture()
 {
-    //TODO
+    impl->tearDown();
     return true;
 }
 
@@ -132,11 +293,6 @@ bool CaptureMF::resetBus()
 {
     //TODO
     return false;
-}
-
-void CaptureMF::readAllParameterValues()
-{
-    //TODO
 }
 
 string CaptureMF::getCaptureMethodName() const

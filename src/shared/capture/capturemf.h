@@ -37,7 +37,6 @@ public:
     virtual bool     startCapture();
     virtual bool     stopCapture();
     virtual bool     resetBus();
-    virtual void     readAllParameterValues();
     virtual string   getCaptureMethodName() const;
 
 private:
