@@ -24,19 +24,15 @@
 #include <mfapi.h>
 #include <mfidl.h>
 #include <mfreadwrite.h>
+#include <mferror.h>
 #include <iostream>
+#include "capturemf_helper.h"
 using namespace std;
 
 string toString(WCHAR *pWString)
 {
     wstring wstr(pWString);
     return string(wstr.begin(), wstr.end());
-}
-
-template <class T> void sRelease(T **pp)
-{
-    if(*pp) (*pp)->Release();
-    *pp = NULL;
 }
 
 /// Capture from Microsoft Media Foundation
@@ -165,6 +161,9 @@ struct CaptureMFImpl
         );
         if(FAILED(hr)) goto end;
 
+        //hr = EnumerateCaptureFormats(source);
+        //if(FAILED(hr)) goto end;
+
         // Get the symbolic link.
         hr = device->GetAllocatedString(
             MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK,
@@ -223,16 +222,16 @@ struct CaptureMFImpl
             busy = false;
         }
 
-        sRelease(&source);
-        sRelease(&attributes);
+        SafeRelease(&source);
+        SafeRelease(&attributes);
 
         return SUCCEEDED(hr);
     }
 
     void tearDown() {
         if(!busy) return;
-        sRelease(&mediaReader);
-        sRelease(&mediaType);
+        SafeRelease(&mediaReader);
+        SafeRelease(&mediaType);
         CoTaskMemFree(symLink);
         symLink = NULL;
         symLinkLength = 0;
@@ -267,12 +266,12 @@ struct CaptureMFImpl
     }
 
     void releaseSample() {
-        sRelease(&currentSample);
+        SafeRelease(&currentSample);
         if(locked && mediaBuffer) {
             mediaBuffer->Unlock();
             locked = false;
         }
-        sRelease(&mediaBuffer);
+        SafeRelease(&mediaBuffer);
     }
 
     RawImage sampleToRawImage() {
@@ -306,7 +305,7 @@ struct CaptureMFImpl
             //image.setTime(...)
             image.setData(buffer);
             //TODO: set the right color format
-            image.setColorFormat(COLOR_YUV422_UYVY);
+            image.setColorFormat(COLOR_YUV422_YUYV);
             return image;
         }
 
