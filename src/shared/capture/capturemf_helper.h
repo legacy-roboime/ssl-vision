@@ -6,6 +6,7 @@ HRESULT GetGUIDName(const GUID& guid, WCHAR **ppwsz);
 
 HRESULT LogAttributeValueByIndex(IMFAttributes *pAttr, DWORD index);
 HRESULT SpecialCaseAttributeValue(GUID guid, const PROPVARIANT& var);
+HRESULT LogMediaType(IMFMediaType *pType);
 
 void DBGMSG(PCWSTR format, ...);
 
@@ -13,6 +14,104 @@ template <class T> void SafeRelease(T **pp)
 {
     if(*pp) (*pp)->Release();
     *pp = NULL;
+}
+
+HRESULT EnumerateCaptureFormats(IMFMediaSource *pSource)
+{
+    IMFPresentationDescriptor *pPD = NULL;
+    IMFStreamDescriptor *pSD = NULL;
+    IMFMediaTypeHandler *pHandler = NULL;
+    IMFMediaType *pType = NULL;
+
+    HRESULT hr = pSource->CreatePresentationDescriptor(&pPD);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    BOOL fSelected;
+    hr = pPD->GetStreamDescriptorByIndex(0, &fSelected, &pSD);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pSD->GetMediaTypeHandler(&pHandler);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    DWORD cTypes = 0;
+    hr = pHandler->GetMediaTypeCount(&cTypes);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    for (DWORD i = 0; i < cTypes; i++)
+    {
+        hr = pHandler->GetMediaTypeByIndex(i, &pType);
+        if (FAILED(hr))
+        {
+            goto done;
+        }
+
+        LogMediaType(pType);
+        //OutputDebugStringW(L"\n");
+        cout << endl;
+
+        SafeRelease(&pType);
+    }
+
+done:
+    SafeRelease(&pPD);
+    SafeRelease(&pSD);
+    SafeRelease(&pHandler);
+    SafeRelease(&pType);
+    return hr;
+}
+
+HRESULT SetDeviceFormat(IMFMediaSource *pSource, DWORD dwFormatIndex)
+{
+    IMFPresentationDescriptor *pPD = NULL;
+    IMFStreamDescriptor *pSD = NULL;
+    IMFMediaTypeHandler *pHandler = NULL;
+    IMFMediaType *pType = NULL;
+
+    HRESULT hr = pSource->CreatePresentationDescriptor(&pPD);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    BOOL fSelected;
+    hr = pPD->GetStreamDescriptorByIndex(0, &fSelected, &pSD);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pSD->GetMediaTypeHandler(&pHandler);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pHandler->GetMediaTypeByIndex(dwFormatIndex, &pType);
+    if (FAILED(hr))
+    {
+        goto done;
+    }
+
+    hr = pHandler->SetCurrentMediaType(pType);
+
+done:
+    SafeRelease(&pPD);
+    SafeRelease(&pSD);
+    SafeRelease(&pHandler);
+    SafeRelease(&pType);
+    return hr;
 }
 
 HRESULT LogMediaType(IMFMediaType *pType)
@@ -384,62 +483,6 @@ LPCWSTR GetGUIDNameConst(const GUID& guid)
     IF_EQUAL_RETURN(guid, MFAudioFormat_ADTS); //             WAVE_FORMAT_MPEG_ADTS_AAC 
 
     return NULL;
-}
-
-HRESULT EnumerateCaptureFormats(IMFMediaSource *pSource)
-{
-    IMFPresentationDescriptor *pPD = NULL;
-    IMFStreamDescriptor *pSD = NULL;
-    IMFMediaTypeHandler *pHandler = NULL;
-    IMFMediaType *pType = NULL;
-
-    HRESULT hr = pSource->CreatePresentationDescriptor(&pPD);
-    if (FAILED(hr))
-    {
-        goto done;
-    }
-
-    BOOL fSelected;
-    hr = pPD->GetStreamDescriptorByIndex(0, &fSelected, &pSD);
-    if (FAILED(hr))
-    {
-        goto done;
-    }
-
-    hr = pSD->GetMediaTypeHandler(&pHandler);
-    if (FAILED(hr))
-    {
-        goto done;
-    }
-
-    DWORD cTypes = 0;
-    hr = pHandler->GetMediaTypeCount(&cTypes);
-    if (FAILED(hr))
-    {
-        goto done;
-    }
-
-    for (DWORD i = 0; i < cTypes; i++)
-    {
-        hr = pHandler->GetMediaTypeByIndex(i, &pType);
-        if (FAILED(hr))
-        {
-            goto done;
-        }
-
-        LogMediaType(pType);
-        //OutputDebugStringW(L"\n");
-        cout << endl;
-
-        SafeRelease(&pType);
-    }
-
-done:
-    SafeRelease(&pPD);
-    SafeRelease(&pSD);
-    SafeRelease(&pHandler);
-    SafeRelease(&pType);
-    return hr;
 }
 
 #endif

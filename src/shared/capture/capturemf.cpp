@@ -41,9 +41,17 @@ string toString(WCHAR *pWString)
 
 struct CaptureMFImpl
 {
+    // VarType settings, displayed to the user
     VarList *conversionSettings;
     VarList *captureSettings;
     VarStringEnum *deviceSetting;
+    VarStringEnum *sizeSetting;
+
+    // Maps to ease retriving values from settings
+    map<string, VarType> deviceMap;
+    map<string, VarType> sizeMap;
+
+    // Media Foundation classes
     IMFActivate **devices;
     IMFSourceReader *mediaReader;
     IMFMediaType *mediaType;
@@ -83,13 +91,15 @@ struct CaptureMFImpl
 
         string defaultDevice = "";
         if(enumerateDevices()) {
-            if(deviceNames.size() > 0)
+            if(deviceNames.size() > 0) {
                 defaultDevice = deviceNames[0];
+            }
         } else {
             cerr << "Couldn't enumerate devices." << endl;
         }
 
         deviceSetting = new VarStringEnum("Device", defaultDevice);
+        sizeSetting = new VarStringEnum("Size", "");
         captureSettings->addChild(deviceSetting);
         populateSettings();
     }
@@ -175,6 +185,7 @@ struct CaptureMFImpl
         // Create an attribute store to hold initialization settings.
         hr = MFCreateAttributes(&attributes, 2);
         if(FAILED(hr)) goto end;
+
         hr = attributes->SetUINT32(MF_READWRITE_DISABLE_CONVERTERS, TRUE);
         if(FAILED(hr)) goto end;
 
@@ -318,13 +329,48 @@ struct CaptureMFImpl
 
 // Public interface:
 
+#ifdef VDATA_NO_QT
 CaptureMF::CaptureMF(VarList *_settings) :
+#else
+CaptureMF::CaptureMF(VarList *_settings, QObject *parent) :
+    QObject(parent),
+#endif
     CaptureInterface(_settings),
     impl(new CaptureMFImpl())
 {
     settings->addChild(impl->conversionSettings);
     settings->addChild(impl->captureSettings);
 }
+
+#ifndef VDATA_NO_QT
+void CaptureMF::mvc_connect(VarList *group)
+{
+    vector<VarType *> v = group->getChildren();
+    for (uint i = 0; i < v.size(); i++) {
+        connect(
+            v[i],
+            SIGNAL(wasEdited(VarType *)),
+            group,
+            SLOT(mvcEditCompleted())
+        );
+    }
+    connect(
+        group,
+        SIGNAL(wasEdited(VarType *)),
+        this,
+        SLOT(changed(VarType *))
+    );
+}
+
+void CaptureMF::changed(VarType *group)
+{
+    if(group->getType() == VARTYPE_ID_LIST) {
+        //TODO
+        //writeParameterValues((VarList *)group);
+        //readParameterValues((VarList *)group);
+    }
+}
+#endif
 
 CaptureMF::~CaptureMF()
 {
@@ -371,7 +417,7 @@ bool CaptureMF::resetBus()
 bool CaptureMF::copyAndConvertFrame(const RawImage &fromImage, RawImage &toImage)
 {
     //TODO: actually implement something
-    //note that only COLOR_YUV422_UYVY and COLOR_RGB8 are supported as output
+    //note that only COLOR_YUV422_UYVY, COLOR_YUV422_YUYV and COLOR_RGB8 are supported as output
     /*toImage.setHeight(fromImage.getHeight());
     toImage.setWidth(fromImage.getWidth());
     toImage.setTime(fromImage.getTime());

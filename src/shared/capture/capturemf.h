@@ -23,12 +23,26 @@
 #define CAPTUREMF_H
 #include "captureinterface.h"
 
-struct CaptureMFImpl;
-
+#ifdef VDATA_NO_QT
 class CaptureMF : public CaptureInterface
 {
 public:
     CaptureMF(VarList *settings);
+#else
+#include <QMutex>
+class CaptureMF : public QObject, public CaptureInterface
+{
+    Q_OBJECT
+protected:
+    QMutex mutex;
+
+public slots:
+    void changed(VarType *group);
+
+public:
+    CaptureMF(VarList *settings, QObject *parent=0);
+    void mvc_connect(VarList *group);
+#endif
     ~CaptureMF();
 
     virtual RawImage getFrame();
@@ -41,7 +55,7 @@ public:
     virtual string   getCaptureMethodName() const;
 
 private:
-    CaptureMFImpl *impl;
+    struct CaptureMFImpl *impl;
 };
 
 #endif
