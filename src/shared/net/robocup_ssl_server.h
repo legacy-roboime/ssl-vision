@@ -23,6 +23,7 @@
 #define ROBOCUP_SSL_SERVER_H
 #include <string>
 #include <QMutex>
+#include <QObject>
 #include "messages_robocup_ssl_detection.pb.h"
 #include "messages_robocup_ssl_geometry.pb.h"
 #include "messages_robocup_ssl_wrapper.pb.h"
@@ -36,13 +37,10 @@ class RoboCupSSLServer
 {
 friend class MultiStackRoboCupSSL;
 public:
-    RoboCupSSLServer(const quint16 & port = 10002,
-                     const string & net_address="224.5.23.2",
-                     const string & net_interface="");
-
-    RoboCupSSLServer(const quint16 & port,
-                     const QHostAddress &,
-                     const QNetworkInterface &);
+    RoboCupSSLServer(QObject *parent=0,
+                     const quint16 &port=10002,
+                     const string &net_address="224.5.23.2",
+                     const string &net_interface="");
 
     ~RoboCupSSLServer();
 

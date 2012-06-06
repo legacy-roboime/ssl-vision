@@ -25,24 +25,14 @@
 
 using namespace std;
 
-RoboCupSSLServer::RoboCupSSLServer(const quint16 & port, const string & net_address, const string & net_interface) :
-    _socket(new QUdpSocket()),
+RoboCupSSLServer::RoboCupSSLServer(QObject *parent, const quint16 &port, const string &net_address, const string &net_interface) :
+    _socket(new QUdpSocket(parent)),
     _port(port),
     _net_address(new QHostAddress(QString(net_address.c_str()))),
     _net_interface(new QNetworkInterface(QNetworkInterface::interfaceFromName(QString(net_interface.c_str()))))
 {
-	_socket->setSocketOption(QAbstractSocket::MulticastTtlOption, 1);
+    _socket->setSocketOption(QAbstractSocket::MulticastTtlOption, 1);
 }
-
-
-RoboCupSSLServer::RoboCupSSLServer(const quint16 & port, const QHostAddress & addr, const QNetworkInterface & iface) :
-    _socket(new QUdpSocket()),
-    _port(port),
-    _net_address(new QHostAddress(addr)),
-    _net_interface(new QNetworkInterface(iface))
-{
-}
-
 
 RoboCupSSLServer::~RoboCupSSLServer()
 {
