@@ -13,3 +13,9 @@
 
 .DS_STORE
 
+##
+# Windows
+
+Thumbs.db
+desktop.ini
+
