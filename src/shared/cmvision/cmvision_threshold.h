@@ -17,6 +17,7 @@
   \brief   C++ Interface: cmvision_threshold
   \author  James Bruce (Original CMVision implementation and algorithms),
            Some code restructuring, and data structure changes: Stefan Zickler 2008
+           Small changes and adding YUYV support: Jan Segre, 2012
 */
 //========================================================================
 #ifndef CMVISIONTHRESHOLD_H
@@ -31,14 +32,12 @@
 /**
 	@author James Bruce (Original CMVision implementation and algorithms),
           Some code restructuring, and data structure changes: Stefan Zickler 2008
+          Small changes and adding YUYV support: Jan Segre, 2012
 */
-class CMVisionThreshold{
-public:
-    CMVisionThreshold();
-
-    ~CMVisionThreshold();
+struct CMVisionThreshold {
 
     static bool thresholdImageYUV422_UYVY(Image<raw8> * target, const RawImage * source, YUVLUT * lut);
+    static bool thresholdImageYUV422_YUYV(Image<raw8> * target, const RawImage * source, YUVLUT * lut);
     static bool thresholdImageYUV444(Image<raw8> * target, const ImageInterface * source, YUVLUT * lut);
     static bool thresholdImageRGB(Image<raw8> * target, const ImageInterface * source, RGBLUT * lut);
 

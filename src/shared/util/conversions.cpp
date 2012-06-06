@@ -130,6 +130,41 @@ void Conversions::uyvy2rgb ( unsigned char *src,
 #endif
 }
 
+void Conversions::yuyv2rgb ( unsigned char *src,
+                             unsigned char *dest,
+                             int width,
+                             int height ) {
+#ifdef USE_DC1394
+    //dc1394_convert_to_RGB8(src,dest, width, height, DC1394_BYTE_ORDER_UYVY,
+    //                   DC1394_COLOR_CODING_YUV422, 8);
+#else
+  
+  int NumPixels = width*height;
+                             
+  register int max_i = ( NumPixels << 1 )-1;
+  //register int max_j = NumPixels + ( NumPixels << 1 ) -1;
+  register int i = 0;
+  register int j = 0;
+  register int y0, y1, u, v;
+  register int r, g, b;
+
+  while ( i < max_i ) {
+    y0 = ( unsigned char ) src[i++];
+    u  = ( unsigned char ) src[i++] - 128;
+    y1 = ( unsigned char ) src[i++];
+    v  = ( unsigned char ) src[i++] - 128;
+    yuv2rgb ( y0, u, v, r, g, b );
+    dest[j++] = r;
+    dest[j++] = g;
+    dest[j++] = b;
+    yuv2rgb ( y1, u, v, r, g, b );
+    dest[j++] = r;
+    dest[j++] = g;
+    dest[j++] = b;
+  }
+#endif
+}
+
 void Conversions::uyvy2bgr ( unsigned char *src,
                              unsigned char *dest,
                              int width,

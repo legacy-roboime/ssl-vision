@@ -105,6 +105,7 @@ static void bgr2rgb (unsigned char *src, unsigned char *dest, int width, int hei
 static void rgb2bgr (unsigned char *src, unsigned char *dest, int width, int height);
 static void rgb482rgb (unsigned char *src, unsigned char *dest, int width, int height);
 static void uyv2rgb (unsigned char *src, unsigned char *dest, int width, int height);
+static void yuyv2rgb (unsigned char *src, unsigned char *dest, int width, int height);
 static void uyvy2bgr (unsigned char *src, unsigned char *dest, int width, int height);
 static void y162rgb (unsigned char *src, unsigned char *dest, int width, int height, int bits);
 

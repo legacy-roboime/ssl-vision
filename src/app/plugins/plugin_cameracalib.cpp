@@ -105,12 +105,18 @@ void PluginCameraCalibration::detectEdges(FrameData * data)
     grey_image = new greyImage(data->video.getWidth(),data->video.getHeight());
     rgb_image = new rgbImage(data->video.getWidth(),data->video.getHeight());
   }
-  if (data->video.getColorFormat()==COLOR_YUV422_UYVY) 
+  if (data->video.getColorFormat()==COLOR_YUV422_UYVY)
   {
     Conversions::uyvy2rgb(data->video.getData(),(unsigned char*)(rgb_image->getData()),data->video.getWidth(),data->video.getHeight());
     Images::convert(*rgb_image, *grey_image);
     //std::cout<<"Hmmm. YUV422."<<std::endl;
-  } 
+  }
+  if (data->video.getColorFormat()==COLOR_YUV422_YUYV)
+  {
+    Conversions::yuyv2rgb(data->video.getData(),(unsigned char*)(rgb_image->getData()),data->video.getWidth(),data->video.getHeight());
+    Images::convert(*rgb_image, *grey_image);
+    //std::cout<<"Hmmm. YUV422."<<std::endl;
+  }
   else if (data->video.getColorFormat()==COLOR_RGB8) 
   {
     Images::convert(data->video, *grey_image);

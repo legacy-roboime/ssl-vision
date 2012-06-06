@@ -89,6 +89,8 @@ ProcessResult PluginVisualize::process(FrameData * data, RenderOptions * options
         memcpy(vis_frame->data.getData(),data->video.getData(),data->video.getNumBytes());
       } else if (source_format==COLOR_YUV422_UYVY) {
         Conversions::uyvy2rgb(data->video.getData(),(unsigned char*)(vis_frame->data.getData()),data->video.getWidth(),data->video.getHeight());
+      } else if (source_format==COLOR_YUV422_YUYV) {
+        Conversions::yuyv2rgb(data->video.getData(),(unsigned char*)(vis_frame->data.getData()),data->video.getWidth(),data->video.getHeight());
       } else {
         //blank it:
         vis_frame->data.fillBlack();

@@ -47,6 +47,11 @@ ProcessResult PluginColorThreshold::process(FrameData * data, RenderOptions * op
     img_thresholded->allocate(data->video.getWidth(),data->video.getHeight());
     //directly apply YUV lut:
     CMVisionThreshold::thresholdImageYUV422_UYVY(img_thresholded,&(data->video),lut);
+  } else if (data->video.getColorFormat()==COLOR_YUV422_YUYV) {
+    //make sure image is allocated:
+    img_thresholded->allocate(data->video.getWidth(),data->video.getHeight());
+    //directly apply YUV lut:
+    CMVisionThreshold::thresholdImageYUV422_YUYV(img_thresholded,&(data->video),lut);
   } else if (data->video.getColorFormat()==COLOR_YUV444) {
     //make sure image is allocated:
     img_thresholded->allocate(data->video.getWidth(),data->video.getHeight());
