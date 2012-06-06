@@ -37,6 +37,7 @@ public:
     virtual bool     startCapture();
     virtual bool     stopCapture();
     virtual bool     resetBus();
+    virtual bool     copyAndConvertFrame(const RawImage &, RawImage &);
     virtual string   getCaptureMethodName() const;
 
 private:
