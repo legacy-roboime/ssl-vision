@@ -60,7 +60,6 @@ set(SHARED_SRCS
 	${shared_dir}/gl/glcamera.cpp
 	${shared_dir}/gl/globject.cpp
 
-	#${shared_dir}/net/netraw.cp
 	${shared_dir}/net/robocup_ssl_client.cpp
 	${shared_dir}/net/robocup_ssl_server.cpp
 

@@ -8,3 +8,14 @@
 /build*/*
 !/build/.gitkeep
 
+##
+# Mac OSX
+
+.DS_STORE
+
+##
+# Windows
+
+Thumbs.db
+desktop.ini
+
