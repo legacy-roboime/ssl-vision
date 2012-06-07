@@ -52,7 +52,10 @@ class RawImage : public ImageInterface
   ColorFormat format;
 
   /// capture timestamp of the image
-  double   time;
+  double time;
+
+  /// when true it won't try to delete data
+  bool managed;
 
   public:
   RawImage();
@@ -68,6 +71,7 @@ class RawImage : public ImageInterface
   int getNumBytes() const;
   int getNumColorBlocks() const;
   int getNumPixels() const;
+  inline bool getManaged() const {return managed;}
 
   //mutators:
   void setColorFormat(ColorFormat f);
@@ -75,6 +79,7 @@ class RawImage : public ImageInterface
   void setHeight(int h);
   void setTime(double t);
   void setData(unsigned char * d);
+  inline void setManaged(bool b) {managed = b;}
   void allocate (ColorFormat fmt, int w, int h);
   void ensure_allocation (ColorFormat fmt, int w, int h);
   void deepCopyFromRawImage(const RawImage & img, bool copyMetaData);

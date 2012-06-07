@@ -21,13 +21,14 @@
 
 #include "rawimage.h"
 
-RawImage::RawImage()
+RawImage::RawImage() :
+  data(0),
+  width(0),
+  height(0),
+  format(COLOR_UNDEFINED),
+  time(0.0),
+  managed(false)
 {
-  data=0;
-  width=0;
-  height=0;
-  format=COLOR_UNDEFINED;
-  time=0.0;
 }
 
 
@@ -105,7 +106,7 @@ void RawImage::setTime(double t)
 
 void RawImage::setData(unsigned char * d)
 {
-  if (data!=0) delete[] data;
+  if (!managed && data!=0) delete[] data;
   data=d;
 }
 
