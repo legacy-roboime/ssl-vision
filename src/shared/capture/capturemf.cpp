@@ -26,14 +26,10 @@
 #include <mfreadwrite.h>
 #include <mferror.h>
 #include <iostream>
-#include "capturemf_helper.h"
+
 using namespace std;
 
-string toString(WCHAR *pWString)
-{
-    wstring wstr(pWString);
-    return string(wstr.begin(), wstr.end());
-}
+#include "capturemf_helper.h"
 
 /// Capture from Microsoft Media Foundation
 
@@ -48,60 +44,50 @@ struct CaptureMFImpl
     VarStringEnum *sizeSetting;
 
     // Maps to ease retriving values from settings
-    map<string, VarType> deviceMap;
+    map<string, IMFActivate *> deviceMap;
     map<string, VarType> sizeMap;
 
     // Media Foundation classes
-    IMFActivate **devices;
     IMFSourceReader *mediaReader;
-    IMFMediaType *mediaType;
     IMFMediaBuffer *mediaBuffer;
     IMFSample *currentSample;
-    LONGLONG timeStamp;
-    bool locked;
-    vector<string> deviceNames;
     UINT32 count;
     WCHAR *symLink;
     UINT32 symLinkLength;
-    UINT32 width;
-    UINT32 height;
-    // this flag is used to prevent releasing
-    // when already released.
-    //TODO: implement a better solution, tearDown should be idempotent
+
+    // To use as a template when generating frames
+    RawImage image;
+
+    // Flags
+    bool locked;
+    // this flag is used to prevent releasing when already released.
+    //FIXME: tearDown should be idempotent
     bool busy;
 
     CaptureMFImpl() :
         currentSample(0),
         mediaBuffer(NULL),
-        timeStamp(0),
         locked(false),
-        devices(NULL),
         mediaReader(NULL),
-        mediaType(NULL),
-        deviceNames(vector<string>()),
         count(0),
         symLink(NULL),
         symLinkLength(0),
-        width(0),
-        height(0),
         busy(false)
     {
         conversionSettings = new VarList("Conversion Settings");
         captureSettings = new VarList("Capture Settings");
+        deviceSetting = new VarStringEnum("Device");
+        sizeSetting = new VarStringEnum("Size");
+        captureSettings->addChild(deviceSetting);
 
-        string defaultDevice = "";
-        if(enumerateDevices()) {
-            if(deviceNames.size() > 0) {
-                defaultDevice = deviceNames[0];
+        if(SUCCEEDED(enumerateDevices())) {
+            if(deviceMap.size() == 0) {
+                cerr << "No device found." << endl;
             }
         } else {
             cerr << "Couldn't enumerate devices." << endl;
         }
 
-        deviceSetting = new VarStringEnum("Device", defaultDevice);
-        sizeSetting = new VarStringEnum("Size", "");
-        captureSettings->addChild(deviceSetting);
-        populateSettings();
     }
 
     ~CaptureMFImpl() {
@@ -109,29 +95,32 @@ struct CaptureMFImpl
         delete conversionSettings;
         delete captureSettings;
         delete deviceSetting;
-        //TODO: check for memory leaks maybe
+        delete sizeSetting;
+        //TODO: check for memory leaks maybe?
     }
 
-    bool enumerateDevices() {
+    HRESULT enumerateDevices() {
         HRESULT hr = S_OK;
         IMFAttributes *attributes = NULL;
 
         // Initialize an attribute store to specify enumeration parameters.
         hr = MFCreateAttributes(&attributes, 1);
-        if(FAILED(hr)) return false;
+        if(FAILED(hr)) goto done;
 
         // Ask for source type = video capture devices.
         hr = attributes->SetGUID(
             MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE,
             MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID
         );
-        if(FAILED(hr)) return false;
+        if(FAILED(hr)) goto done;
 
         // Enumerate devices.
+        IMFActivate **devices;
         hr = MFEnumDeviceSources(attributes, &devices, &count);
-        if(FAILED(hr)) return false;
+        if(FAILED(hr)) goto done;
 
         // Save list of friendly names
+        deviceSetting->setSize(count);
         for(UINT32 i = 0; i < count; i++) {
             WCHAR *friendlyName = NULL;
 
@@ -140,36 +129,42 @@ struct CaptureMFImpl
                 &friendlyName,
                 NULL
             );
-            if(FAILED(hr)) break;
+            if(FAILED(hr)) goto done;
 
             // Since we are not using Unicode, we must convert friendlyName to string
-            deviceNames.push_back(toString(friendlyName));
+            string name = toString(friendlyName);
+
+            // Push the device to settings and mapping.
+            deviceSetting->setLabel(i, name);
+            deviceMap[name] = devices[i];
         }
-        return true;
+    done:
+        return hr;
     }
 
-    void populateSettings() {
-        for(UINT32 i = 0; i < deviceNames.size(); i++)
-            deviceSetting->addItem(string(deviceNames[i]));
-    }
+    HRESULT setupDevice(IMFActivate *device) {
+        if(busy) return E_NOT_VALID_STATE;
 
-    bool setupDevice(IMFActivate *device) {
-        if(busy) return false;
+        HRESULT hr(S_OK);
+
+        IMFMediaSource *source(NULL);
+        IMFAttributes *attributes(NULL);
+        IMFMediaType *mediaType(NULL);
+        IMFSample *sample(NULL);
+
+        //Release the current device, if any.
+        hr = tearDown();
+        if(FAILED(hr)) goto done;
+
+        // Now we can be busy
         busy = true;
-
-        HRESULT hr = S_OK;
-
-        IMFMediaSource  *source = NULL;
-        IMFAttributes   *attributes = NULL;
-
-        //TODO: Release the current device, if any.
 
         // Create the media source for the device.
         hr = device->ActivateObject(
             __uuidof(IMFMediaSource),
             (void**)&source
         );
-        if(FAILED(hr)) goto end;
+        if(FAILED(hr)) goto done;
 
         //hr = EnumerateCaptureFormats(source);
         //if(FAILED(hr)) goto end;
@@ -180,14 +175,13 @@ struct CaptureMFImpl
             &symLink,
             &symLinkLength
         );
-        if(FAILED(hr)) goto end;
+        if(FAILED(hr)) goto done;
 
         // Create an attribute store to hold initialization settings.
         hr = MFCreateAttributes(&attributes, 2);
-        if(FAILED(hr)) goto end;
-
+        if(FAILED(hr)) goto done;
         hr = attributes->SetUINT32(MF_READWRITE_DISABLE_CONVERTERS, TRUE);
-        if(FAILED(hr)) goto end;
+        if(FAILED(hr)) goto done;
 
         // Create the source reader.
         hr = MFCreateSourceReaderFromMediaSource(
@@ -195,27 +189,43 @@ struct CaptureMFImpl
             attributes,
             &mediaReader
         );
-        if(FAILED(hr)) goto end;
+        if(FAILED(hr)) goto done;
 
         //TODO: Try to find a suitable output type.
         hr = mediaReader->GetCurrentMediaType(
             0,//is it ok to just try the first one?
             &mediaType
         );
-        if(FAILED(hr)) goto end;
+        if(FAILED(hr)) goto done;
 
         // Get width and height from mediaType
+        UINT32 width, height;
         hr = MFGetAttributeSize(
             mediaType,
             MF_MT_FRAME_SIZE,
             &width,
             &height
         );
-        if(FAILED(hr)) goto end;
+        if(FAILED(hr)) goto done;
+        image.setWidth(width);
+        image.setHeight(height);
+
+        // Indicate that we manage the image buffer
+        image.setManaged(true);
+
+        // Get color format from mediaType
+        //TODO: set the right color format
+        GUID subtype;
+        hr = mediaType->GetGUID(
+            MF_MT_SUBTYPE,
+            &subtype
+        );
+        if(FAILED(hr)) goto done;
+        ColorFormat cf = toColorFormat(subtype);
+        image.setColorFormat(cf);
 
         // Ask for the first sample.
         DWORD streamFlags;
-        IMFSample *sample;
         hr = mediaReader->ReadSample(
             MF_SOURCE_READER_FIRST_VIDEO_STREAM,
             0,
@@ -225,7 +235,7 @@ struct CaptureMFImpl
             &sample
         );
 
-    end:
+    done:
         if(FAILED(hr)) {
             if(source)
                 source->Shutdown();
@@ -235,48 +245,23 @@ struct CaptureMFImpl
 
         SafeRelease(&source);
         SafeRelease(&attributes);
+        SafeRelease(&mediaType);
+        SafeRelease(&sample);
 
-        return SUCCEEDED(hr);
+        return hr;
     }
 
-    void tearDown() {
-        if(!busy) return;
+    HRESULT tearDown() {
         SafeRelease(&mediaReader);
-        SafeRelease(&mediaType);
         CoTaskMemFree(symLink);
         symLink = NULL;
         symLinkLength = 0;
-        width = 0;
-        height = 0;
         busy = false;
+        image = RawImage();
+        return S_OK;
     }
 
-    bool getSample() {
-        if(!mediaReader) goto fail;
-
-        HRESULT hr = S_OK;
-
-        // Read sample from reader.
-        DWORD streamFlags;
-        hr = mediaReader->ReadSample(
-            MF_SOURCE_READER_FIRST_VIDEO_STREAM,
-            0,
-            NULL,
-            &streamFlags,
-            &timeStamp,
-            &currentSample
-        );
-        if(FAILED(hr)) goto fail;
-        if(!currentSample) goto fail;
-
-        return true;
-
-    fail:
-        cerr << "Error retrieving sample." << endl;
-        return false;
-    }
-
-    void releaseSample() {
+    void releaseFrame() {
         SafeRelease(&currentSample);
         if(locked && mediaBuffer) {
             mediaBuffer->Unlock();
@@ -285,14 +270,27 @@ struct CaptureMFImpl
         SafeRelease(&mediaBuffer);
     }
 
-    RawImage sampleToRawImage() {
-        if(!currentSample) goto fail;
+    RawImage getFrame() {
+        if(!mediaReader) goto done;
 
         HRESULT hr = S_OK;
 
+        // Read sample from reader.
+        DWORD streamFlags;
+        LONGLONG timeStamp;
+        hr = mediaReader->ReadSample(
+            MF_SOURCE_READER_FIRST_VIDEO_STREAM,
+            0,
+            NULL,
+            &streamFlags,
+            &timeStamp,
+            &currentSample
+        );
+        if(FAILED(hr)) goto done;
+
         // Get the first buffer on the sample.
         hr = currentSample->GetBufferByIndex(0, &mediaBuffer);
-        if(FAILED(hr)) goto fail;
+        if(FAILED(hr)) goto done;
 
         // Acquire acces to the memory
         BYTE *buffer;
@@ -304,25 +302,22 @@ struct CaptureMFImpl
             &bufferLength
         );
 
-        if(FAILED(hr)) goto fail;
-
-        // Build image from buffer
-        else {
+    done:
+        if(SUCCEEDED(hr)) {
+            // Build image from buffer
             locked = true;
-            RawImage image;
-            image.setWidth(width);
-            image.setHeight(height);
             //TODO: properly convert timeStamp to double and set the time
             //image.setTime(...)
             image.setData(buffer);
-            //TODO: set the right color format
-            image.setColorFormat(COLOR_YUV422_YUYV);
             return image;
+        } else {
+            cerr << "An error occurred getting a frame." << endl;
+            return RawImage();
         }
+    }
 
-    fail:
-        cerr << "Failed to build RawImage()" << endl;
-        return RawImage();
+    IMFActivate *selectedDevice() {
+        return deviceMap[deviceSetting->getSelection()];
     }
 
 };
@@ -379,10 +374,7 @@ CaptureMF::~CaptureMF()
 
 RawImage CaptureMF::getFrame()
 {
-    if(impl->getSample())
-        return impl->sampleToRawImage();
-    else
-        return RawImage();
+    return impl->getFrame();
 }
 
 bool CaptureMF::isCapturing()
@@ -392,20 +384,22 @@ bool CaptureMF::isCapturing()
 
 void CaptureMF::releaseFrame()
 {
-    impl->releaseSample();
+    impl->releaseFrame();
 }
 
 bool CaptureMF::startCapture()
 {
     impl->enumerateDevices();
-    //TODO: call the selected device instead of the first one
-    return impl->setupDevice(impl->devices[0]);
+    IMFActivate *device = impl->selectedDevice();
+    if(device)
+        return SUCCEEDED(impl->setupDevice(device));
+    else
+        return false;
 }
 
 bool CaptureMF::stopCapture()
 {
-    impl->tearDown();
-    return true;
+    return SUCCEEDED(impl->tearDown());
 }
 
 bool CaptureMF::resetBus()
@@ -416,14 +410,14 @@ bool CaptureMF::resetBus()
 
 bool CaptureMF::copyAndConvertFrame(const RawImage &fromImage, RawImage &toImage)
 {
-    //TODO: actually implement something
-    //note that only COLOR_YUV422_UYVY, COLOR_YUV422_YUYV and COLOR_RGB8 are supported as output
-    /*toImage.setHeight(fromImage.getHeight());
+    toImage.setHeight(fromImage.getHeight());
     toImage.setWidth(fromImage.getWidth());
     toImage.setTime(fromImage.getTime());
+    //TODO: implement a conversion
+    //note that only COLOR_YUV422_UYVY, COLOR_YUV422_YUYV and COLOR_RGB8 are supported as output
     toImage.setData(fromImage.getData());
-    toImage.setColorFormat(fromImage.getColorFormat());*/
-    toImage.deepCopyFromRawImage(fromImage, true);
+    toImage.setColorFormat(fromImage.getColorFormat());
+    toImage.setManaged(true);
     return true;
 }
 

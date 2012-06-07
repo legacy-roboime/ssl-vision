@@ -16,6 +16,65 @@ template <class T> void SafeRelease(T **pp)
     *pp = NULL;
 }
 
+string toString(WCHAR *pWString)
+{
+    wstring wstr(pWString);
+    return string(wstr.begin(), wstr.end());
+}
+
+ColorFormat toColorFormat(const GUID& mf_mt_subtype) //MF_MT_SUBTYPE
+{
+#define _IFEQRET(a, b) if(mf_mt_subtype == a) return b;
+    _IFEQRET(MFVideoFormat_UYVY, COLOR_YUV422_UYVY); //     FCC('UYVY')
+    _IFEQRET(MFVideoFormat_RGB8, COLOR_RGB8);
+    _IFEQRET(MFVideoFormat_YUY2, COLOR_YUV422_YUYV); //     FCC('YUY2')
+    _IFEQRET(MFVideoFormat_YVYU, COLOR_YUV422_YUYV);//to confirm
+    return COLOR_UNDEFINED;
+    _IFEQRET(MFVideoFormat_YV12, COLOR_UNDEFINED); //     FCC('YV12')
+    _IFEQRET(MFVideoFormat_AI44, COLOR_UNDEFINED); //     FCC('AI44')
+    _IFEQRET(MFVideoFormat_ARGB32, COLOR_UNDEFINED); //   D3DFMT_A8R8G8B8 
+    _IFEQRET(MFVideoFormat_AYUV, COLOR_UNDEFINED); //     FCC('AYUV')
+    _IFEQRET(MFVideoFormat_DV25, COLOR_UNDEFINED); //     FCC('dv25')
+    _IFEQRET(MFVideoFormat_DV50, COLOR_UNDEFINED); //     FCC('dv50')
+    _IFEQRET(MFVideoFormat_DVH1, COLOR_UNDEFINED); //     FCC('dvh1')
+    _IFEQRET(MFVideoFormat_DVSD, COLOR_UNDEFINED); //     FCC('dvsd')
+    _IFEQRET(MFVideoFormat_DVSL, COLOR_UNDEFINED); //     FCC('dvsl')
+    _IFEQRET(MFVideoFormat_H264, COLOR_UNDEFINED); //     FCC('H264')
+    _IFEQRET(MFVideoFormat_I420, COLOR_UNDEFINED); //     FCC('I420')
+    _IFEQRET(MFVideoFormat_IYUV, COLOR_UNDEFINED); //     FCC('IYUV')
+    _IFEQRET(MFVideoFormat_M4S2, COLOR_UNDEFINED); //     FCC('M4S2')
+    _IFEQRET(MFVideoFormat_MJPG, COLOR_UNDEFINED);
+    _IFEQRET(MFVideoFormat_MP43, COLOR_UNDEFINED); //     FCC('MP43')
+    _IFEQRET(MFVideoFormat_MP4S, COLOR_UNDEFINED); //     FCC('MP4S')
+    _IFEQRET(MFVideoFormat_MP4V, COLOR_UNDEFINED); //     FCC('MP4V')
+    _IFEQRET(MFVideoFormat_MPG1, COLOR_UNDEFINED); //     FCC('MPG1')
+    _IFEQRET(MFVideoFormat_MSS1, COLOR_UNDEFINED); //     FCC('MSS1')
+    _IFEQRET(MFVideoFormat_MSS2, COLOR_UNDEFINED); //     FCC('MSS2')
+    _IFEQRET(MFVideoFormat_NV11, COLOR_UNDEFINED); //     FCC('NV11')
+    _IFEQRET(MFVideoFormat_NV12, COLOR_UNDEFINED); //     FCC('NV12')
+    _IFEQRET(MFVideoFormat_P010, COLOR_UNDEFINED); //     FCC('P010')
+    _IFEQRET(MFVideoFormat_P016, COLOR_UNDEFINED); //     FCC('P016')
+    _IFEQRET(MFVideoFormat_P210, COLOR_UNDEFINED); //     FCC('P210')
+    _IFEQRET(MFVideoFormat_P216, COLOR_UNDEFINED); //     FCC('P216')
+    _IFEQRET(MFVideoFormat_RGB24, COLOR_UNDEFINED); //    D3DFMT_R8G8B8 
+    _IFEQRET(MFVideoFormat_RGB32, COLOR_UNDEFINED); //    D3DFMT_X8R8G8B8 
+    _IFEQRET(MFVideoFormat_RGB555, COLOR_UNDEFINED); //   D3DFMT_X1R5G5B5 
+    _IFEQRET(MFVideoFormat_RGB565, COLOR_UNDEFINED); //   D3DFMT_R5G6B5 
+    _IFEQRET(MFVideoFormat_v210, COLOR_UNDEFINED); //     FCC('v210')
+    _IFEQRET(MFVideoFormat_v410, COLOR_UNDEFINED); //     FCC('v410')
+    _IFEQRET(MFVideoFormat_WMV1, COLOR_UNDEFINED); //     FCC('WMV1')
+    _IFEQRET(MFVideoFormat_WMV2, COLOR_UNDEFINED); //     FCC('WMV2')
+    _IFEQRET(MFVideoFormat_WMV3, COLOR_UNDEFINED); //     FCC('WMV3')
+    _IFEQRET(MFVideoFormat_WVC1, COLOR_UNDEFINED); //     FCC('WVC1')
+    _IFEQRET(MFVideoFormat_Y210, COLOR_UNDEFINED); //     FCC('Y210')
+    _IFEQRET(MFVideoFormat_Y216, COLOR_UNDEFINED); //     FCC('Y216')
+    _IFEQRET(MFVideoFormat_Y410, COLOR_UNDEFINED); //     FCC('Y410')
+    _IFEQRET(MFVideoFormat_Y416, COLOR_UNDEFINED); //     FCC('Y416')
+    _IFEQRET(MFVideoFormat_Y41P, COLOR_UNDEFINED);
+    _IFEQRET(MFVideoFormat_Y41T, COLOR_UNDEFINED);
+#undef _IFEQRET
+}
+
 HRESULT EnumerateCaptureFormats(IMFMediaSource *pSource)
 {
     IMFPresentationDescriptor *pPD = NULL;
@@ -484,5 +543,7 @@ LPCWSTR GetGUIDNameConst(const GUID& guid)
 
     return NULL;
 }
+
+
 
 #endif
