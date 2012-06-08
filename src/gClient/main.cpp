@@ -22,6 +22,7 @@
 #include "sslField.h"
 #include "sslReceiverThread.h"
 #include "gClientBlackBoard.h"
+#include "winmain.hpp"
 
 
 int main(int argc, char **argv)

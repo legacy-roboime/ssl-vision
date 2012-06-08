@@ -221,7 +221,7 @@ target_link_libraries(${graphicalclient} ${libs})
 
 ##build new client
 set (gclient gClient)
-add_executable(${gclient}
+add_executable(${gclient} ${gui_option}
 	src/gClient/main.cpp
 	src/gClient/sslField.cpp
 )
