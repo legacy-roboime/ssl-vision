@@ -1,6 +1,7 @@
 #ifndef WINMAIN_HPP
 #define WINMAIN_HPP
 #ifdef HAVE_WINDOWS
+#include <Windows.h>
 
 int main(int, char**);
 
