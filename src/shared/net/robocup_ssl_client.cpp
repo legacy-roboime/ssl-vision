@@ -57,7 +57,7 @@ void RoboCupSSLClient::close()
 bool RoboCupSSLClient::open()
 {
     close();
-    if(!_socket->bind(_port, QUdpSocket::ShareAddress)) {
+    if(!_socket->bind(_port, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
         cerr << "Unable to bind UDP socket on port " << _port << ". "
              << _socket->errorString().toStdString() << '.' << endl;
         return false;
@@ -75,7 +75,7 @@ bool RoboCupSSLClient::open()
 
 bool RoboCupSSLClient::receive(SSL_WrapperPacket & packet)
 {
-    if(_socket->hasPendingDatagrams()) {
+    if(_socket->state() == QUdpSocket::BoundState && _socket->hasPendingDatagrams()) {
         QByteArray datagram;
         mutex.lock();
         datagram.resize(_socket->pendingDatagramSize());
