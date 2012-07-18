@@ -165,20 +165,21 @@ else()
 endif()
 
 
+#TODO: add PNG and JPEG libraries
+set(libs
+        ${QT_LIBRARIES}
+        ${shared_libs}
+        sslvision
+)
+
 ## build the common code
 add_library(sslvision
 	${SHARED_MOC_SRCS}
 	${SHARED_RC_SRCS}
 	${CC_PROTO}
-	${SHARED_SRCS}
+        ${SHARED_SRCS}
 )
-
-#TODO: add PNG and JPEG libraries
-set(libs
-	${QT_LIBRARIES}
-	${shared_libs}
-	sslvision
-)
+target_link_libraries(sslvision ${libs})
 
 ## build the main app
 set(target vision)
