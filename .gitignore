@@ -9,6 +9,10 @@
 !/build/.gitkeep
 
 ##
+# Qt Creator
+*.user
+
+##
 # Mac OSX
 
 .DS_STORE
