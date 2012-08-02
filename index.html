@@ -1,0 +1,216 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>ssl-vision by roboime</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>ssl-vision</h1>
+        <p>Fork of RoboCup Small Size League Shared Vision System</p>
+
+        <p class="view"><a href="https://github.com/roboime/ssl-vision">View the Project on GitHub <small>roboime/ssl-vision</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/roboime/ssl-vision/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/roboime/ssl-vision/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/roboime/ssl-vision">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <blockquote>
+<p>This software is free: you can redistribute it and/or modify
+it under the terms of the GNU General Public License Version 3,
+as published by the Free Software Foundation.</p>
+
+<p>This software is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU General Public License
+Version 3 in the file COPYING that came with this distribution.
+If not, see &lt;<a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>&gt;.</p>
+</blockquote>
+
+<h1><a href="http://github.com/roboime/ssl-vision/">ssl-vision</a></h1>
+
+<h2>RoboCup Small Size League Shared Vision System</h2>
+
+<p>This is a fork which intends to add compatibility for Windows, and
+possibly Mac OSX. The official repo is available <a href="http://code.google.com/p/ssl-vision/">here</a>.</p>
+
+<h2>Online Documentation</h2>
+
+<p>To find more in-depth and up-to-date information about SSL-Vision
+(including installation and configuration), please visit the <a href="http://code.google.com/p/ssl-vision/wiki/Manual">Wiki
+Documentation Page</a>.</p>
+
+<h2>Software Requirements</h2>
+
+<ul>
+<li>cmake &gt;= 2.8</li>
+<li>g++, clang++ or vc++</li>
+<li>QT &gt;= 4.8 with opengl and networking support</li>
+<li>Eigen2 or Eigen3</li>
+<li>Google protocol buffers (protoc)</li>
+<li>OpenGL</li>
+<li>GLU</li>
+<li>libdc1394 &gt;= 2.0 for using IEEE1394 camera, currently only works on linux</li>
+<li>libjpeg</li>
+<li>libpng</li>
+</ul><p>To get all of these packages in ubuntu/debian variants, run:</p>
+
+<p><code>sudo apt-get install g++ libqt4-dev libeigen2-dev protobuf-compiler libprotobuf-dev libdc1394-22 libdc1394-22-dev cmake</code></p>
+
+<p>For gentoo users the following should suffice:</p>
+
+<p><code>sudo emerge cmake qt-core qt-gui qt-opengl eigen protobuf opengl libdc1394</code></p>
+
+<h2>Hardware Requirements</h2>
+
+<p>The system supports 1394B / Firewire 800, but it's also backward compatible
+with 1394A.
+Though it's not mandatory and the software can be compiled without support
+for camera.</p>
+
+<h2>Compilation</h2>
+
+<p>On linux or Mac, build the code by running:</p>
+
+<p><code>make</code></p>
+
+<p>The project <em>should</em> build without errors or warnings.</p>
+
+<p>Alternativley on any system:</p>
+
+<pre><code>cd build
+cmake .. -i #for interactive mode
+</code></pre>
+
+<p>On Windows it's possible to use:</p>
+
+<p><code>make_vcproj</code></p>
+
+<p>that script will call cmake-gui.</p>
+
+<p>Also on Mac and Windows one can also use cmake-gui directly, choosing
+the project root as the source directory, and build folder as
+build directory.</p>
+
+<h2>Running</h2>
+
+<ol>
+<li><p>Depending on your OS, you might need to ensure that you have
+full access to the firewire devices /dev/fw* This <strong>might</strong>
+require logging in as root.</p></li>
+<li>
+<p>Run the software using the following command:</p>
+
+<pre><code>cd bin
+./vision
+</code></pre>
+
+<p>Note that it's better to go to the ./bin dir first since some .xml's
+will be generated and for organization sake they shouldn't be on
+the root of the project not to mix with the source nor build system.</p>
+
+<p>Alternatively open it from your file manager, this works for all OS's,
+though on linux you won't see the stdout this way.</p>
+</li>
+</ol><h2>Starting to Capture and Setting Parameters</h2>
+
+<p>Once the software is running, you should see two empty capture frames
+on the right, and a data-tree structure on the left.</p>
+
+<p>In this data-structure you can setup your camera parameters,
+such as resolution, capture mode, etc.</p>
+
+<p>A quick hint: the text-field below the data-tree allows for
+fast search through the data-tree.</p>
+
+<p>See the section of DC1394 parameters below to get an idea of what the
+parameters do.</p>
+
+<p>Once you have them set up, you can start capturing by clicking
+"Image Capture/Capture Control/Start"
+in the data-tree.</p>
+
+<h2>DC1394 Parameters</h2>
+
+<p>If you expand the tree then the capture parameters are in
+"Image Capture/DC1394/Capture Settings"</p>
+
+<p>Furthermore, conversion settings are in
+"Image Capture/DC1394/Conversion Settings"</p>
+
+<p>"convert to mode" should currently be "yuv422"</p>
+
+<p>for best performance, "capture mode" should also be "yuv422",
+but can also be a different format such as "yuv411" or "rgb"</p>
+
+<p>Alternatively, if you desire, you can do de-bayering in software,
+but this will take extra CPU cycles. To do so, you would set the
+capture mode to e.g. "raw8" and the convert mode to "rgb". Finally,
+you will need to set "de-bayer" to true, and select the correct
+de-bayer pattern and desired method.</p>
+
+<p>Capturing supports both DCAM native modes and Format7 modes.
+This is selected in the "capture format" field. Leaving it on
+"auto" will attempt native mode first, then format7_0.</p>
+
+<p>By default, ISO800 support is disabled. To enable it, mark the
+field "use ISO800" as true.</p>
+
+<h3>ONLINE PARAMETERS</h3>
+
+<p>Once you start capturing, you should see the realtime video image
+on the right.
+Furthermore, in the data tree, you should be able to go to the
+"Camera Parameters" node which will then be expandable and show
+all of your DCAM parameters.</p>
+
+<p>You can adjust all of these parameters in real-time.</p>
+
+<p>Note that the read-out of these parameters from the camera
+only happens automatically if "auto refresh params" in the
+Capture Control is set to true. Otherwise, you can use
+the "re-read params" "Refresh" button to refresh them manually.
+For performance reasons, it might make sense to set auto refresh
+to false, so the bus is not being flooded with too much control
+data and has full bandwidth available for the video streaming.</p>
+
+<h2>Storage of Settings and Parameters </h2>
+
+<p>When you quit the application normally (by closing the window
+not thru Ctrl-C) then all settings and parameters will
+automatically be written to a set of xml files.</p>
+
+<p>All settings should be automatically restored during the next
+program start.</p>
+
+<p>In case the files should ever become corrupted, or the
+program refuses to start completely when parsing the XML files
+(this should normally never occur) then simply delete all
+XML files and restart. The program should restore its default
+settings.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/roboime">roboime</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
