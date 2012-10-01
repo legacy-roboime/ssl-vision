@@ -7,7 +7,10 @@ buildType=Release
 
 all: build
 
-cmake: CMakeLists.txt
+mkbuilddir:
+	[ -d $(buildDir) ] || mkdir $(buildDir)
+
+cmake: mkbuilddir CMakeLists.txt
 	cd $(buildDir) && cmake -DCMAKE_BUILD_TYPE=$(buildType) ..
 
 build: cmake
@@ -20,10 +23,10 @@ cleanup_cache:
 	cd $(buildDir) && rm -rf *
 	
 run: all
-	./bin/vision
+	cd bin && ./vision
 	
-runClient:
-	./bin/client
+runClient: all
+	cd bin && ./client
 	
-runGraphicalClient:
-	./bin/graphicalClient
+runGraphicalClient: all
+	cd bin && ./graphicalClient
