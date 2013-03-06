@@ -37,6 +37,8 @@
 #include "affinity_manager.h"
 #endif
 
+class CaptureV4L2;
+
 /*!
   \class   CaptureThread
   \brief   A thread for capturing and processing video data
@@ -54,6 +56,7 @@ protected:
 #ifdef USE_DC1394
   CaptureInterface * captureDC1394;
 #endif
+  CaptureInterface * captureV4L2;
   CaptureInterface * captureFiles;
   CaptureInterface * captureGenerator;
 #ifdef USE_AFFINITY_MANAGER
@@ -64,6 +67,7 @@ protected:
   int camId;
   VarList * settings;
   VarList * dc1394;
+  VarList * v4l2;
   VarList * generator;
   VarList * fromfile;
   VarList * control;

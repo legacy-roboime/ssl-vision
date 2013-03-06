@@ -20,6 +20,7 @@
 //========================================================================
 
 #include "capture_thread.h"
+#include "capture_v4l2.h"
 
 CaptureThread::CaptureThread(int cam_id)
 {
@@ -38,9 +39,11 @@ CaptureThread::CaptureThread(int cam_id)
   control->addChild( (VarType*) (captureModule= new VarStringEnum("Capture Module","DC 1394")));
   captureModule->addFlags(VARTYPE_FLAG_NOLOAD_ENUM_CHILDREN);
   captureModule->addItem("DC 1394");
+  captureModule->addItem("Video4Linux 2");
   captureModule->addItem("Read from files");
   captureModule->addItem("Generator");
   settings->addChild( (VarType*) (dc1394 = new VarList("DC1394")));
+  settings->addChild( (VarType*) (v4l2 = new VarList("Video4Linux 2")));
   settings->addChild( (VarType*) (fromfile = new VarList("Read from files")));
   settings->addChild( (VarType*) (generator = new VarList("Generator")));
   settings->addFlags( VARTYPE_FLAG_AUTO_EXPAND_TREE );
@@ -57,6 +60,7 @@ CaptureThread::CaptureThread(int cam_id)
 #ifdef USE_DC1394
   captureDC1394 = new CaptureDC1394v2(dc1394,camId);
 #endif
+  captureV4L2 = new CaptureV4L2(v4l2);
   captureFiles = new CaptureFromFile(fromfile);
   captureGenerator = new CaptureGenerator(generator);
   selectCaptureMethod();
@@ -85,6 +89,7 @@ CaptureThread::~CaptureThread()
 #ifdef USE_DC1394
   delete captureDC1394;
 #endif
+  delete captureV4L2;
   delete captureFiles;
   delete captureGenerator;
   delete counter;
@@ -111,6 +116,8 @@ void CaptureThread::selectCaptureMethod() {
     new_capture = captureFiles;
   } else if(mode == "Generator") {
     new_capture = captureGenerator;
+  } else if(mode == "Video4Linux 2") {
+    new_capture = captureV4L2;
   } else {
 #ifdef USE_DC1394
     new_capture = captureDC1394;
