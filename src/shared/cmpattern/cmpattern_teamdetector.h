@@ -131,7 +131,7 @@ public:
     _settings= new VarList(label);
     _settings->addChild(_selector = new VarStringEnum("Team",""));
     _selector->addFlags(VARTYPE_FLAG_NOLOAD_ENUM_CHILDREN);
-    _settings->addChild(_num_robots = new VarInt("Max Robots",5));
+    _settings->addChild(_num_robots = new VarInt("Max Robots",6));
     update();
   }
   VarList * getSettings() {
@@ -184,6 +184,8 @@ protected:
   double _center_marker_area_stddev;
   double _center_marker_uniform;
   double _center_marker_duplicate_distance;
+  int    _other_markers_max_detections;
+  double _other_markers_max_query_distance;
 
   bool  _histogram_enable;
   int    _histogram_pixel_scan_radius;

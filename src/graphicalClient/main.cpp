@@ -40,7 +40,7 @@ protected:
     client.open();
     SSL_WrapperPacket packet;
     while(runApp) {
-      if (client.receive(packet)) {
+      while (client.receive(packet)) {
         if (packet.has_detection()) {
           SSL_DetectionFrame detection = packet.detection();
           view->updateDetection(detection);
