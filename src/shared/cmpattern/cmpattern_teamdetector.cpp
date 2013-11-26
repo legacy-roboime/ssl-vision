@@ -409,6 +409,9 @@ void TeamDetector::stripRobots(::google::protobuf::RepeatedPtrField< ::SSL_Detec
 
 
 
+//TODO: find out if we can dynamically allocate/deallocate
+// the way it was before was a gcc extension and not standard c++
+#define _MAX_DETECTIONS 64
 
 void TeamDetector::findRobotsByModel(::google::protobuf::RepeatedPtrField< ::SSL_DetectionRobot >* robots, int team_color_id, const Image<raw8> * image, CMVision::ColorRegionList * colorlist, CMVision::RegionTree & reg_tree)
 {
@@ -416,7 +419,7 @@ void TeamDetector::findRobotsByModel(::google::protobuf::RepeatedPtrField< ::SSL
   (void)image;
   const int MaxDetections = _other_markers_max_detections;
   Marker cen; // center marker
-  Marker markers[MaxDetections];
+  Marker markers[_MAX_DETECTIONS];
   const float marker_max_query_dist = _other_markers_max_query_distance;
   const float marker_max_dist = _pattern_max_dist;
 
